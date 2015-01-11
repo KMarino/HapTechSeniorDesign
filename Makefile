@@ -2,13 +2,13 @@
 CXX =g++
 
 # Compile flags
-CFLAGS += -O3 -isystem extern/gtest-1.7.0/include 
+CFLAGS += -O3 -isystem extern/gtest-1.7.0/include
 
 #Libraries
-LIBS += -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a 
+LIBS += -L/usr/local/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a
 
 #Includes
-INCS += -Iinclude -Iextern/gtest-1.7.0
+INCS += -Iinclude -Iextern/gtest-1.7.0 -I/extern/jsoncpp-src-0.5.0/include/
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
@@ -22,8 +22,16 @@ INCDIR = include
 # PUT object files here. These are examples from another project
 # OBJS = $(BINDIR)/util.o $(BINDIR)/hdf_util.o $(BINDIR)/optparser.o $(BINDIR)/features.o $(BINDIR)/piotrfeatures.o  $(BINDIR)/random_forest.o $(BINDIR)/forest_helpers.o $(BINDIR)/boosted_svm.o $(BINDIR)/learning.o $(BINDIR)/inference.o $(BINDIR)/posemachine.o $(BINDIR)/classifier.o $(BINDIR)/logger.o $(BINDIR)/random_exemplar.o $(BINDIR)/feature_space_quantizer.o $(BINDIR)/kmeans.o
 
-# Another examples - change eventually
-all:
+all: $(BINDIR)/optparser.o $(BINDIR)/EffectsModel.o
+
+$(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/optparser.o $(SRCDIR)/optparser.cpp ${INCS}
+
+$(BINDIR)/EffectsModel.o: $(SRCDIR)/EffectsModel.cpp $(INCDIR)/EffectsModel.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/EffectsModel.o $(SRCDIR)/EffectsModel.cpp ${INCS}
+
 #all: $(BINDIR)/train_pose_machine $(BINDIR)/run_pose_machine $(BINDIR)/run_pim_webcam $(BINDIR)/hdf_test $(BINDIR)/train_time_test $(BINDIR)/unit_test
 
 #$(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
@@ -107,10 +115,6 @@ all:
 #$(BINDIR)/hdf_util.o: $(SRCDIR)/HDFUtil.cpp $(INCDIR)/HDFUtil.h
 #	@echo $<
 #	$(CXX) $(CFLAGS) -c -o $(BINDIR)/hdf_util.o $(SRCDIR)/HDFUtil.cpp ${INCS}
-
-#$(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
-#	@echo $<
-#	$(CXX) $(CFLAGS) -c -o $(BINDIR)/optparser.o $(SRCDIR)/optparser.cpp ${INCS}
 
 #$(BINDIR)/random_forest.o: $(SRCDIR)/random_forest.cpp $(INCDIR)/ml/random_forest.h $(INCDIR)/globalDefs.h $(INCDIR)/ml/forest_helpers.h $(INCDIR)/ml/classifier.h
 #	@echo $<
