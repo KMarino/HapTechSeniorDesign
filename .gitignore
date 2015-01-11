@@ -1,0 +1,11 @@
+.jpg
+.pgm
+.rf
+.swp
+
+/bin
+/temp
+/data
+/output
+
+*~
