@@ -23,3 +23,4 @@ Use the following command to link JSON-CPP.
 
 sudo ln -s <AbsolutePathToHapTechSeniorDesign>/extern/json-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so /usr/local/lib/
 
+Note, you may need to also link to /usr/lib/ depending on your setup

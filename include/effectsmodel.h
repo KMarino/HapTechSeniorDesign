@@ -1,5 +1,5 @@
-#ifndef EFFECTSMODEL_H
-#define EFFECTSMODEL_H
+#ifndef EFFECTS_MODEL_H
+#define EFFECTS_MODEL_H
 
 #include <string>
 #include "eventinfo.h"
@@ -22,7 +22,7 @@ private:
     bool updateMouse(EventInfo event);
     bool updateKeyProfile(EventInfo event);    
 
-    HWState hw;
+    HWState m_hw;
 };
 
-#endif // EFFECTSMODEL_H
+#endif // EFFECTS_MODEL_H

@@ -11,6 +11,7 @@ class Profile
 public:
     Profile();
     void update(HWState hw);
+    
 };
 
 #endif // PROFILE_H

@@ -1,7 +1,5 @@
 #include "effectsmodel.h"
 
-using namespace std;
-
 EffectsModel::EffectsModel()	
 {
 }

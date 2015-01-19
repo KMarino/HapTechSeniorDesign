@@ -5,7 +5,7 @@ CXX =g++
 CFLAGS += -O3 -isystem extern/gtest-1.7.0/include
 
 #Libraries
-LIBS += -L/usr/local/lib/ -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a
+LIBS += -L/usr/local/lib/ -L/usr/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a
 
 #Includes
 INCS += -Iinclude -Iextern/gtest-1.7.0 -I/extern/jsoncpp-src-0.5.0/include/
@@ -20,18 +20,24 @@ INCDIR = include
 
 # Object files
 # PUT object files here. These are examples from another project
-OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o
+OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
 # OBJS = $(BINDIR)/util.o $(BINDIR)/hdf_util.o $(BINDIR)/optparser.o $(BINDIR)/features.o $(BINDIR)/piotrfeatures.o  $(BINDIR)/random_forest.o $(BINDIR)/forest_helpers.o $(BINDIR)/boosted_svm.o $(BINDIR)/learning.o $(BINDIR)/inference.o $(BINDIR)/posemachine.o $(BINDIR)/classifier.o $(BINDIR)/logger.o $(BINDIR)/random_exemplar.o $(BINDIR)/feature_space_quantizer.o $(BINDIR)/kmeans.o
 
-all: $(BINDIR)/effects_model_ui
+all: $(BINDIR)/effects_model_ui $(BINDIR)/serial_test
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/serial_test: $(BINDIR)/serial_test.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/serial_test $(BINDIR)/serial_test.o $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp 
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effects_model_ui.o $(SRCDIR)/effects_model_ui.cpp ${INCS}
 
+$(BINDIR)/serial_test.o: $(SRCDIR)/serial_test.cpp
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/serial_test.o $(SRCDIR)/serial_test.cpp ${INCS}
 
 $(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
 	@echo $<
@@ -52,6 +58,14 @@ $(BINDIR)/profile.o: $(SRCDIR)/profile.cpp $(INCDIR)/profile.h
 $(BINDIR)/hwstate.o: $(SRCDIR)/hwstate.cpp $(INCDIR)/hwstate.h
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/hwstate.o $(SRCDIR)/hwstate.cpp ${INCS}
+
+$(BINDIR)/effect.o: $(SRCDIR)/effect.cpp $(INCDIR)/effect.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effect.o $(SRCDIR)/effect.cpp ${INCS}
+
+$(BINDIR)/effectupdatemessage.o: $(SRCDIR)/effectupdatemessage.cpp $(INCDIR)/effectupdatemessage.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effectupdatemessage.o $(SRCDIR)/effectupdatemessage.cpp ${INCS}
 
 #all: $(BINDIR)/train_pose_machine $(BINDIR)/run_pose_machine $(BINDIR)/run_pim_webcam $(BINDIR)/hdf_test $(BINDIR)/train_time_test $(BINDIR)/unit_test
 
