@@ -5,6 +5,11 @@ Effect_Delay::Effect_Delay()
 {
 }
 
+Effect_Delay::Effect_Delay(const Effect_Delay& other)
+{
+    m_delay_time = other.m_delay_time;
+}
+
 Effect_Delay::Effect_Delay(double delay_time)
 {
     m_delay_time = delay_time;

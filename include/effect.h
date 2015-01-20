@@ -27,6 +27,7 @@ class Effect_Delay: public Effect
 public:
     // Functions
     Effect_Delay();
+    Effect_Delay(const Effect_Delay& other);
     Effect_Delay(double delay_time);
     Effect_Delay(const char* msg);
     void serialize(char* output);  

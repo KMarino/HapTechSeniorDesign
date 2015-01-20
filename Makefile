@@ -8,7 +8,7 @@ CFLAGS += -O3 -isystem extern/gtest-1.7.0/include
 LIBS += -L/usr/local/lib/ -L/usr/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a
 
 #Includes
-INCS += -Iinclude -Iextern/gtest-1.7.0 -I/extern/jsoncpp-src-0.5.0/include/
+INCS += -Iinclude -Iextern/gtest-1.7.0 -Iextern/jsoncpp-src-0.5.0/include/
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
