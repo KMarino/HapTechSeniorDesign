@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <assert.h>
+#include <iostream>
 #include "effectsmodel.h"
 #include "effect.h"
 
@@ -15,7 +16,8 @@ public:
     EffectUpdateMessage(vector<Effect*> effects, vector<EffectType> types); // Note, effectupdatemessage will keep track of and delete the pointers in effects now, so do not delete outside the function
     EffectUpdateMessage(char* msg);
     ~EffectUpdateMessage();
-    void serialize(char* output);   
+    void serialize(char* output);
+    bool issame(const EffectUpdateMessage& other);
 
 private:
     vector<EffectType> m_effect_types;

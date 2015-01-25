@@ -1,0 +1,20 @@
+//Hardware configuration
+{
+    // Total number of input devices
+    "num_dev": 12,
+
+    // Number of potentiometers and pins
+    "num_pot": 5,
+    "pot_pins": [0, 1, 2, 3, 4],
+
+    // Number of switches and pins
+    "num_switch": 3,
+    "switch_pins": [5, 6, 7],
+
+    // Number of buttons and pins (possibly)
+    "num_push": 4,
+    "push_pins": [8, 9, 10, 11],
+
+    // Touchscreen info
+    "touch_size": [480, 560]
+}

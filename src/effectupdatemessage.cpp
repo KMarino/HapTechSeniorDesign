@@ -36,19 +36,16 @@ EffectUpdateMessage::EffectUpdateMessage(vector<Effect*> effects, vector<EffectT
 
 EffectUpdateMessage::EffectUpdateMessage(char* msg)
 {
-    // Copy actual message
-    m_msg = msg;
-
     // Start reading
     int offset = 0;
-    memcpy(&m_msg_sz, m_msg + offset, sizeof(int));
+    memcpy(&m_msg_sz, msg + offset, sizeof(int));
     offset += sizeof(int);
-    memcpy(&m_num_effects, m_msg + offset, sizeof(int));
+    memcpy(&m_num_effects, msg + offset, sizeof(int));
     offset += sizeof(int);   
     for (int i = 0; i < m_num_effects; i++)
     {
         EffectType type;
-        memcpy(&type, m_msg + offset, sizeof(EffectType));
+        memcpy(&type, msg + offset, sizeof(EffectType));
         m_effect_types.push_back(type);
         offset += sizeof(EffectType);
         Effect* effect;
@@ -61,32 +58,32 @@ EffectUpdateMessage::EffectUpdateMessage(char* msg)
             case DISTORTION:
                 effect = new Effect_Distortion();
                 break;
-
-            case REVERB:
-                effect = new Effect_Reverb();
-                break;
             
-            case HIGHPASS:
-                effect = new Effect_Highpass();
+            case EQUALIZER:
+                effect = new Effect_Equalizer();
                 break;
 
             case LOWPASS:
                 effect = new Effect_Lowpass();
                 break;
-            
-            case BANDPASS:
-                effect = new Effect_Bandpass();
+
+            case REVERB:
+                effect = new Effect_Reverb();
                 break;
             
             case UNKNOWN:
                 effect = new Effect_Unknown();
                 break;
         }
-        memcpy(effect, m_msg + offset, getEffectSize(type));
+        memcpy(effect, msg + offset, getEffectSize(type));
         m_effects.push_back(effect);
         offset += getEffectSize(type);
     }
-    assert(offset == m_msg_sz);        
+    assert(offset == m_msg_sz);   
+
+    // Copy actual message
+    m_msg = new char[m_msg_sz];
+    memcpy(m_msg, msg, m_msg_sz);
 }
 
 EffectUpdateMessage::~EffectUpdateMessage()
@@ -100,6 +97,40 @@ EffectUpdateMessage::~EffectUpdateMessage()
 
 void EffectUpdateMessage::serialize(char* output)
 {
+    // Start reading
+    int offset = 0;
+    memcpy(output + offset, &m_msg_sz, sizeof(int));
+    offset += sizeof(int);
+    memcpy(output + offset, &m_num_effects, sizeof(int));
+    offset += sizeof(int);   
+    for (int i = 0; i < m_num_effects; i++)
+    {
+        EffectType type = m_effect_types[i];
+        memcpy(output + offset, &type, sizeof(EffectType));
+        offset += sizeof(EffectType);
+        Effect* effect = m_effects[i];
+        memcpy(output + offset, effect, getEffectSize(type));
+        offset += getEffectSize(type);
+    }
+    assert(offset == m_msg_sz); 
+
+    // Copy actual message
+    memcpy(m_msg, output, m_msg_sz);
+}
+
+bool EffectUpdateMessage::issame(const EffectUpdateMessage& other)
+{
+    // Compare everything
+    bool same = true;
+    same &= m_msg_sz == other.m_msg_sz;
+    if (m_num_effects != other.m_num_effects)
+        return false;
+    for (int i = 0; i < m_num_effects; i++)
+    {
+        same &= m_effect_types[i] == other.m_effect_types[i];
+        same &= m_effects[i]->issame(other.m_effects[i]);
+    }
+    return same;
 }
 
 int EffectUpdateMessage::getEffectSize(EffectType type)
@@ -111,18 +142,15 @@ int EffectUpdateMessage::getEffectSize(EffectType type)
 
         case DISTORTION:
             return sizeof(Effect_Distortion);
-
-        case REVERB:
-            return sizeof(Effect_Reverb);
         
-        case HIGHPASS:
-            return sizeof(Effect_Highpass);
+        case EQUALIZER:
+            return sizeof(Effect_Equalizer);
 
         case LOWPASS:
             return sizeof(Effect_Lowpass);
-        
-        case BANDPASS:
-            return sizeof(Effect_Bandpass);
+
+        case REVERB:
+            return sizeof(Effect_Reverb);
         
         case UNKNOWN:
             return sizeof(Effect_Unknown);

@@ -1,0 +1,203 @@
+//Effect Mapping
+{
+    // Profiles
+    "numprofiles": 4,
+    "profile0":
+    {
+		"num_effects": 	1,
+		"effect_types": ["Distortion"],
+        "distortion":
+        {
+            "amount":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot0",
+                "min": 0,
+                "max": 10,
+            },
+
+            "on":
+            {
+                "type": "bool",
+                "default": 0,
+                "control": "switch",
+                "hardware": "switch0"
+            }
+        }
+    },
+
+    "profile1":
+    {
+        "num_effects": 	1,
+		"effect_types": ["Equalizer"],
+        "equalizer":
+        {
+            "lowmid":
+            {
+                "type": "float",
+                "default": 600,
+                "control": "static",
+            },
+        
+            "midhigh":
+            {
+                "type": "float",
+                "default": 6000,
+                "control": "static",
+            },
+    
+            "base_gain":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot0",
+                "min": -20,
+                "max": 20,
+            },
+
+            "mid_gain":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot1",
+                "min": -20,
+                "max": 20,
+            },
+            
+            "treb_gain":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot2",
+                "min": -20,
+                "max": 20,
+            },
+
+            "on":
+            {
+                "type": "bool",
+                "default": 0,
+                "control": "switch",
+                "hardware": "switch0"
+            }
+        }
+    },
+
+    "profile2":
+    {
+		"num_effects": 	2,
+		"effect_types": ["Lowpass", "Delay"],
+        "lowpass":
+        {
+            "cutoff":
+            {
+                "type": "float",
+                "default": 12000,
+                "control": "log",
+                "hardware": "pot0",
+                "min": 60,
+                "max": 12000,
+            },
+
+            "resonance":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot1",
+                "min": 0,
+                "max": 6,
+            },
+
+            "on":
+            {
+                "type": "bool",
+                "default": 0,
+                "control": "switch",
+                "hardware": "switch0"
+            }
+        },
+
+        "delay":
+        {
+            "amount":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot1",
+                "min": 0,
+                "max": 10,
+            },
+
+            "speed":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot2",
+                "min": 0,
+                "max": 10,
+            },
+
+            "decay":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot3",
+                "min": 0,
+                "max": 10,
+            },
+
+            "attack":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot4",
+                "min": 0,
+                "max": 10,
+            },
+
+            "on":
+            {
+                "type": "bool",
+                "default": 0,
+                "control": "switch",
+                "hardware": "switch0"
+            }
+        }
+    },
+
+    "profile3":
+    {
+		"num_effects": 	1,
+		"effect_types": ["Reverb"],
+        "reverb":
+        {
+            "amount":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hardware": "pot0",
+                "min": 0,
+                "max": 10,
+            },
+
+            "on":
+            {
+                "type": "bool",
+                "default": 0,
+                "control": "switch",
+                "hardware": "switch0"
+            }
+        }
+    }
+}
