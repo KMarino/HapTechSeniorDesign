@@ -28,7 +28,7 @@ $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 
 $(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
 	$(CXX) $(CFLAGS) -o $(BINDIR)/unit_test $(BINDIR)/unittesting.o $(OBJS) $(LIBS) ${INCS}
-	./$(BINDIR)/unit_test 
+	./$(BINDIR)/unit_test $(SRCDIR)/../config/unitTest/
 
 $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp 
 	@echo $<

@@ -4,8 +4,11 @@
 #include "optparser.h"
 #include "effect.h"
 #include "effectupdatemessage.h"
+#include "hwstate.h"
 
 using namespace std;
+
+string configLocation;
 
 /*---------------------------------
 ------------- effects -------------
@@ -202,10 +205,48 @@ TEST(UpdateMessage, testSerialization)
     EXPECT_EQ(message.issame(serialize_msg), true);
 }
 
+/*---------------------------------
+------------- hwstate -------------
+-----------------------------------*/
+TEST(hwstate, testConfigParse)
+{
+    // Make hwstate object
+    char configFilepath[1024];
+    strcpy(configFilepath, string(configLocation + "/hardware.json").c_str());
+    HWState hwstate(configFilepath);
+
+    // Check values are same as in config
+    EXPECT_EQ(hwstate.getNumDevices(), 12);
+    EXPECT_EQ(hwstate.getNumPot(), 5);
+    EXPECT_EQ(hwstate.getNumSwitch(), 3);
+    EXPECT_EQ(hwstate.getNumPush(), 4);
+    EXPECT_EQ(hwstate.getTouchWidth(), 560);
+    EXPECT_EQ(hwstate.getTouchHeight(), 480);
+    EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 0), 0);
+    EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 1), 1);
+    EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 2), 2);
+    EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 3), 3);
+    EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 4), 4);
+    EXPECT_EQ(hwstate.getPinNumber(SWITCH, 0), 5);
+    EXPECT_EQ(hwstate.getPinNumber(SWITCH, 1), 6);
+    EXPECT_EQ(hwstate.getPinNumber(SWITCH, 2), 7);
+    EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 0), 8);
+    EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 1), 9);
+    EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 2), 10);
+    EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 3), 11);    
+}
 
 int main(int argc, char** argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
+
+    // Argument is filename
+	if (argc < 2)
+	{
+		cout << "usage unit_test config_unitTest_Directory" << endl;
+		return 1;
+	}
+	configLocation = string(argv[1]);
 
 	return RUN_ALL_TESTS();
 }

@@ -5,3 +5,96 @@ using namespace std;
 HWState::HWState()	
 {
 }
+
+HWState::HWState(const char* configfile)	
+{
+    // Parse the config file
+    Json::Value config;
+    parseJSONFile(configfile, config);
+
+    // Get data
+    m_num_control = config.get("num_dev", 0).asInt();
+    m_num_pot = config.get("num_pot", 0).asInt();
+    m_num_switch = config.get("num_switch", 0).asInt();
+    m_num_push = config.get("num_push", 0).asInt();
+    assert(m_num_control == (m_num_pot + m_num_switch + m_num_push));
+    Json::Value touchscreen_size = config["touch_size"];
+    for (int i = 0; i < 2; i++)
+    {
+        m_touchscreen_size[i] = touchscreen_size.get(i, 0).asInt();
+    }
+    Json::Value potpins = config["pot_pins"];
+    for (int i = 0; i < m_num_pot; i++)
+    {
+        int pot_pin = potpins.get(i, 0).asInt();
+        m_device_pins.push_back(pot_pin);
+        m_device_types.push_back(POTENTIOMETER);
+    }
+    Json::Value switchpins = config["switch_pins"];
+    for (int i = 0; i < m_num_pot; i++)
+    {
+        int switch_pin = switchpins.get(i, 0).asInt();
+        m_device_pins.push_back(switch_pin);
+        m_device_types.push_back(SWITCH);
+    }
+    Json::Value pushpins = config["push_pins"];
+    for (int i = 0; i < m_num_pot; i++)
+    {
+        int push_pin = pushpins.get(i, 0).asInt();
+        m_device_pins.push_back(push_pin);
+        m_device_types.push_back(PUSHBUTTON);
+    }
+}
+
+int HWState::getPinNumber(ControlType type, int index)
+{
+    int pin = -1;
+    int device_idx = 0;
+    for (int i = 0; i < m_device_pins.size(); i++)
+    {        
+        if (m_device_types[i] == type)
+        {
+            if (device_idx == index)
+            {
+                return m_device_pins[i];
+            }
+            else
+            {
+                device_idx++;
+            }
+        }
+    }
+
+    // Return -1 (failure)
+    return pin;
+}
+
+int HWState::getNumPot()
+{
+    return m_num_pot;
+}
+
+int HWState::getNumSwitch()
+{
+    return m_num_switch;
+}
+
+int HWState::getNumPush()
+{
+    return m_num_push;
+}
+
+int HWState::getNumDevices()
+{
+    return m_num_control;
+}
+
+int HWState::getTouchWidth()
+{
+    return m_touchscreen_size[1];
+}
+
+int HWState::getTouchHeight()
+{
+    return m_touchscreen_size[0];
+}
