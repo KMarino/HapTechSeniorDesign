@@ -5,7 +5,7 @@ CXX =g++
 CFLAGS += -O3 -isystem extern/gtest-1.7.0/include
 
 #Libraries
-LIBS += -L/usr/local/lib/ -L/usr/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a
+LIBS += -L/usr/local/lib/ -L/usr/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a -lglut -lGL -lGLU
 
 #Includes
 INCS += -Iinclude -Iextern/gtest-1.7.0 -Iextern/jsoncpp-src-0.5.0/include/
