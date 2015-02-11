@@ -14,7 +14,7 @@ enum EffectType
     EQUALIZER,
     LOWPASS,
     REVERB,
-    UNKNOWN
+    UNKNOWNEFFECT
 };
 
 // Virtual class for effects. Holds all of the parameters of the effect

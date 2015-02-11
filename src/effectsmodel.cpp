@@ -4,7 +4,7 @@ EffectsModel::EffectsModel()
 {
 }
 
-EffectsModel::EffectsModel(string configFile)
+EffectsModel::EffectsModel(char* hwConfigFile, char* mappingConfigFile)
 {
 }
 

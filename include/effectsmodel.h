@@ -13,7 +13,7 @@ class EffectsModel
 {
 public:
     EffectsModel();
-    EffectsModel(string configFile);
+    EffectsModel(char* hwConfigFile, char* mappingConfigFile);
     void updateModel(EventInfo event);
 
 private:

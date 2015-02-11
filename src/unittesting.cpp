@@ -223,17 +223,33 @@ TEST(hwstate, testConfigParse)
     EXPECT_EQ(hwstate.getTouchWidth(), 560);
     EXPECT_EQ(hwstate.getTouchHeight(), 480);
     EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 0), 0);
+    EXPECT_EQ(hwstate.getValue(POTENTIOMETER, 0), 0);
     EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 1), 1);
+    EXPECT_EQ(hwstate.getValue(POTENTIOMETER, 1), 0);
     EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 2), 2);
+    EXPECT_EQ(hwstate.getValue(POTENTIOMETER, 2), 0);
     EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 3), 3);
+    EXPECT_EQ(hwstate.getValue(POTENTIOMETER, 3), 0);
     EXPECT_EQ(hwstate.getPinNumber(POTENTIOMETER, 4), 4);
+    EXPECT_EQ(hwstate.getValue(POTENTIOMETER, 4), 0);
     EXPECT_EQ(hwstate.getPinNumber(SWITCH, 0), 5);
+    EXPECT_EQ(hwstate.getValue(SWITCH, 0), 0);
     EXPECT_EQ(hwstate.getPinNumber(SWITCH, 1), 6);
+    EXPECT_EQ(hwstate.getValue(SWITCH, 1), 0);
     EXPECT_EQ(hwstate.getPinNumber(SWITCH, 2), 7);
+    EXPECT_EQ(hwstate.getValue(SWITCH, 2), 0);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 0), 8);
+    EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 0), 0);
+    EXPECT_EQ(hwstate.getButtonChar(0), 'a');
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 1), 9);
+    EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 1), 0);
+    EXPECT_EQ(hwstate.getButtonChar(1), 's');
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 2), 10);
-    EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 3), 11);    
+    EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 2), 0);
+    EXPECT_EQ(hwstate.getButtonChar(2), 'd');
+    EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 3), 11);
+    EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 3), 0);    
+    EXPECT_EQ(hwstate.getButtonChar(3), 'f');
 }
 
 int main(int argc, char** argv)

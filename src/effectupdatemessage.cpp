@@ -71,7 +71,7 @@ EffectUpdateMessage::EffectUpdateMessage(char* msg)
                 effect = new Effect_Reverb();
                 break;
             
-            case UNKNOWN:
+            case UNKNOWNEFFECT:
                 effect = new Effect_Unknown();
                 break;
         }
@@ -152,7 +152,7 @@ int EffectUpdateMessage::getEffectSize(EffectType type)
         case REVERB:
             return sizeof(Effect_Reverb);
         
-        case UNKNOWN:
+        case UNKNOWNEFFECT:
             return sizeof(Effect_Unknown);
     }
 }

@@ -27,22 +27,25 @@ HWState::HWState(const char* configfile)
     for (int i = 0; i < m_num_pot; i++)
     {
         int pot_pin = potpins.get(i, 0).asInt();
-        m_device_pins.push_back(pot_pin);
+        m_devices.push_back(Control_Pot(pot_pin));
         m_device_types.push_back(POTENTIOMETER);
     }
     Json::Value switchpins = config["switch_pins"];
     for (int i = 0; i < m_num_pot; i++)
     {
         int switch_pin = switchpins.get(i, 0).asInt();
-        m_device_pins.push_back(switch_pin);
+        m_devices.push_back(Control_Switch(switch_pin));
         m_device_types.push_back(SWITCH);
     }
     Json::Value pushpins = config["push_pins"];
-    for (int i = 0; i < m_num_pot; i++)
+    Json::Value keys = config["keys"];
+    for (int i = 0; i < m_num_push; i++)
     {
         int push_pin = pushpins.get(i, 0).asInt();
-        m_device_pins.push_back(push_pin);
+        char key = keys.get(i, "?").asString().at(0);
+        m_devices.push_back(Control_Push(push_pin, key));
         m_device_types.push_back(PUSHBUTTON);
+        m_push_chars.push_back(key);
     }
 }
 
@@ -50,13 +53,13 @@ int HWState::getPinNumber(ControlType type, int index)
 {
     int pin = -1;
     int device_idx = 0;
-    for (int i = 0; i < m_device_pins.size(); i++)
+    for (int i = 0; i < m_devices.size(); i++)
     {        
         if (m_device_types[i] == type)
         {
             if (device_idx == index)
             {
-                return m_device_pins[i];
+                return m_devices[i].getPin();
             }
             else
             {
@@ -67,6 +70,34 @@ int HWState::getPinNumber(ControlType type, int index)
 
     // Return -1 (failure)
     return pin;
+}
+
+double HWState::getValue(ControlType type, int index)
+{
+    double value = -1;
+    int device_idx = 0;
+    for (int i = 0; i < m_devices.size(); i++)
+    {        
+        if (m_device_types[i] == type)
+        {
+            if (device_idx == index)
+            {
+                return m_devices[i].getValue();
+            }
+            else
+            {
+                device_idx++;
+            }
+        }
+    }
+
+    // Return -1 (failure)
+    return value;
+}
+    
+char HWState::getButtonChar(int index)
+{
+    return m_push_chars[index];
 }
 
 int HWState::getNumPot()
