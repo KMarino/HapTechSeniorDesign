@@ -3474,11 +3474,13 @@ Toggle Switch</description>
 <wire x1="-7" y1="12.5" x2="7" y2="12.5" width="0.127" layer="21"/>
 <wire x1="7" y1="-12.5" x2="-7" y2="-12.5" width="0.127" layer="21"/>
 <wire x1="-7" y1="-12.5" x2="-7" y2="12.5" width="0.127" layer="21"/>
-<smd name="2" x="5" y="8.8" dx="3" dy="6" layer="1"/>
-<smd name="1" x="-5" y="8.8" dx="3" dy="6" layer="1"/>
+<smd name="2" x="4" y="8.8" dx="4" dy="6" layer="1"/>
+<smd name="1" x="-4" y="8.8" dx="4" dy="6" layer="1"/>
 <wire x1="7" y1="12.5" x2="7" y2="-12.5" width="0.127" layer="21"/>
 <text x="-6.35" y="12.7" size="1.27" layer="25">&gt;Name</text>
 <text x="-6.35" y="-13.97" size="1.27" layer="27">&gt;Value</text>
+<smd name="P$3" x="-4" y="8.8" dx="4" dy="6" layer="16"/>
+<smd name="P$4" x="4" y="8.8" dx="4" dy="6" layer="16"/>
 </package>
 <package name="POT-SMD">
 <description>Surface Mount Potentiometer</description>
@@ -3816,9 +3818,9 @@ Source: http://ecommas.tycoelectronics.com .. ENG_CD_640456_W.pdf</description>
 <label x="78.74" y="71.12" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="J1" gate="G$1" pin="4"/>
-<wire x1="83.82" y1="10.16" x2="83.82" y2="-5.08" width="0.1524" layer="91"/>
-<label x="83.82" y="-5.08" size="1.778" layer="95"/>
+<pinref part="J1" gate="G$1" pin="2"/>
+<wire x1="88.9" y1="10.16" x2="88.9" y2="20.32" width="0.1524" layer="91"/>
+<label x="88.9" y="20.32" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="POT1" class="0">
@@ -3840,9 +3842,9 @@ Source: http://ecommas.tycoelectronics.com .. ENG_CD_640456_W.pdf</description>
 <label x="134.62" y="71.12" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="J1" gate="G$1" pin="2"/>
-<wire x1="88.9" y1="10.16" x2="88.9" y2="20.32" width="0.1524" layer="91"/>
-<label x="88.9" y="20.32" size="1.778" layer="95"/>
+<pinref part="J1" gate="G$1" pin="4"/>
+<wire x1="83.82" y1="10.16" x2="83.82" y2="-5.08" width="0.1524" layer="91"/>
+<label x="83.82" y="-5.08" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
