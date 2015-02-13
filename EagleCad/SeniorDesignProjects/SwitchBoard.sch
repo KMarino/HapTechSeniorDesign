@@ -3471,16 +3471,16 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <package name="SPST-TOGGLE-SWITCH">
 <description>SPST Single Pole Single Throw
 Toggle Switch</description>
-<wire x1="-7" y1="12.5" x2="7" y2="12.5" width="0.127" layer="21"/>
-<wire x1="7" y1="-12.5" x2="-7" y2="-12.5" width="0.127" layer="21"/>
-<wire x1="-7" y1="-12.5" x2="-7" y2="12.5" width="0.127" layer="21"/>
-<smd name="2" x="4" y="8.8" dx="4" dy="6" layer="1"/>
-<smd name="1" x="-4" y="8.8" dx="4" dy="6" layer="1"/>
-<wire x1="7" y1="12.5" x2="7" y2="-12.5" width="0.127" layer="21"/>
-<text x="-6.35" y="12.7" size="1.27" layer="25">&gt;Name</text>
-<text x="-6.35" y="-13.97" size="1.27" layer="27">&gt;Value</text>
-<smd name="P$3" x="-4" y="8.8" dx="4" dy="6" layer="16"/>
-<smd name="P$4" x="4" y="8.8" dx="4" dy="6" layer="16"/>
+<smd name="2" x="0" y="0" dx="10.16" dy="4.191" layer="1"/>
+<smd name="1" x="0" y="7.874" dx="4.191" dy="7.62" layer="1" rot="R180"/>
+<text x="-7.62" y="12.7" size="1.27" layer="25">&gt;Name</text>
+<text x="-7.62" y="-12.954" size="1.27" layer="27">&gt;Value</text>
+<wire x1="-8.382" y1="11.684" x2="8.382" y2="11.684" width="0.127" layer="21"/>
+<wire x1="8.382" y1="11.684" x2="8.382" y2="-11.684" width="0.127" layer="21"/>
+<wire x1="8.382" y1="-11.684" x2="-8.382" y2="-11.684" width="0.127" layer="21"/>
+<wire x1="-8.382" y1="-11.684" x2="-8.382" y2="11.684" width="0.127" layer="21"/>
+<smd name="3" x="0" y="7.874" dx="4.191" dy="7.62" layer="16" rot="R180"/>
+<smd name="4" x="0" y="0" dx="10.16" dy="4.191" layer="16"/>
 </package>
 <package name="POT-SMD">
 <description>Surface Mount Potentiometer</description>
