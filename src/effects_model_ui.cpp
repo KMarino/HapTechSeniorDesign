@@ -7,28 +7,48 @@
 
 using namespace std;
 
-int keyboard(){
+GLUquadric* quad;
+float transx, transy, transz = 0;
 
+void keyboard(unsigned char key, int x, int y){
+	//will map touchscreen buttons to keys
+	//key is input as char, e.g. key=='a' = true
+	switch (key){
+		case 'a': transx = .01; break;
+		case 'b': transy = .01; break;
+	}
+	//glutPostRedisplay();
+	
 }
 
-int mouse(){
+void mouse(int button, int state, int x, int y){
+	transx = ((float)x-240)/240;
+	transy = (136-(float)y)/136;
+}
 
+void mouseMove(int x, int y){
+	transx = ((float)x-240)/240;
+	transy = (136-(float)y)/136;
 }
 
 void display(){
-	//draw here
-	GLfloat radius = 0.5; //circle radius (relative to screen borders)
 	glClear(GL_COLOR_BUFFER_BIT); //clear all
 	glColor3f(1.0,1.0,1.0); //draw white circle
-	glLineWidth(2.0); //thickness of lines
-	glBegin(GL_LINE_LOOP); //draw lines where first point connects to last
-	for(int i=0; i<360; i++){
-		float theta = i*M_PI/180; //each point on a circle
-		glVertex2f(radius*cos(theta), radius*sin(theta)); 
-	}
-	glEnd();
+	GLdouble innerRad = 0.0; //variables for drawing
+	GLdouble outerRad = .2;
+	GLint slices = 100;
+	GLint loops = 100;
+	GLdouble start = 0;
+	GLdouble sweep = 360;
+	gluPartialDisk(quad, innerRad, outerRad, slices, loops, start, sweep);
+	//GLUquadric*, GLdouble, GLdouble, GLint (subdivisions around z axis), GLint (concentric rings about origin for subdivision), GLdouble (start angle in deg), GLdouble (sweep angle in deg)
+	glLoadIdentity(); //need to reset translation
+	glTranslatef(0,0,0);
+	glTranslatef(transx, transy, transz); //translate
+	glScalef(0.5666,1.0,1.0); //make a circle, not an oval
 	//swap buffers and redraw
 	glutSwapBuffers();
+	glutPostRedisplay();
 }
 
 int main(int argc, char** argv){
@@ -40,6 +60,14 @@ int main(int argc, char** argv){
 	glClearColor(0.0,0.0,0.0,0.0); //clear screen in black
 	//glutFullScreen(); //fullscreen (no window border)
 	glutDisplayFunc(display); //use the display func to draw
+	glutMouseFunc(mouse);
+	glutMotionFunc(mouseMove);
+	glutKeyboardFunc(keyboard);
+	quad = gluNewQuadric();
+		if (quad==0) exit(0);
+	gluQuadricDrawStyle(quad, GLU_FILL);
+	glScalef(0.5666,1.0,1.0); //make it a circle
 	glutMainLoop(); //do it all over and over
-	return 0;
+	gluDeleteQuadric(quad);
+return 0;
 }
