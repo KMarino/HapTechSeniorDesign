@@ -17,6 +17,7 @@ HWState::HWState(const char* configfile)
     m_num_pot = config.get("num_pot", 0).asInt();
     m_num_switch = config.get("num_switch", 0).asInt();
     m_num_push = config.get("num_push", 0).asInt();
+    m_logic_level = (float) config.get("logic_level", 0).asDouble();
     assert(m_num_control == (m_num_pot + m_num_switch + m_num_push));
     Json::Value touchscreen_size = config["touch_size"];
     for (int i = 0; i < 2; i++)
@@ -72,9 +73,9 @@ int HWState::getPinNumber(ControlType type, int index)
     return pin;
 }
 
-double HWState::getValue(ControlType type, int index)
+float HWState::getValue(ControlType type, int index)
 {
-    double value = -1;
+    float value = -1;
     int device_idx = 0;
     for (int i = 0; i < m_devices.size(); i++)
     {        
@@ -128,4 +129,58 @@ int HWState::getTouchWidth()
 int HWState::getTouchHeight()
 {
     return m_touchscreen_size[0];
+}
+
+float HWState::getLogicLevel()
+{
+    return m_logic_level;
+}
+
+ControlType getControlType(string controlstr)
+{
+    if (controlstr.compare("pot") == 0)
+    {
+        return POTENTIOMETER;
+    }
+    else if (controlstr.compare("switch") == 0)
+    {
+        return SWITCH;
+    }
+    else if (controlstr.compare("push") == 0)
+    {
+        return PUSHBUTTON;
+    }
+    else if (controlstr.compare("touch") == 0)
+    {
+        return TOUCHSCREEN;
+    }
+    else
+    {
+        return UNKNOWNCONTROL;
+    }
+}    
+
+ScaleType getScaleType(string scalestr)
+{
+    if (scalestr.compare("linear") == 0)
+    {
+        return LINEAR;
+    }
+    else if (scalestr.compare("log") == 0)
+    {
+        return LOG;
+    }
+    else if (scalestr.compare("switch") == 0)
+    {
+        return SWITCHSCALE;
+    }
+    else if (scalestr.compare("static") == 0)
+    {
+        return STATIC;
+    }
+    else
+    {
+        // Does not match a class
+        return UNKNOWNSCALE;
+    }    
 }

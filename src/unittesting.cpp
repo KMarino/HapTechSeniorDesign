@@ -18,7 +18,7 @@ TEST(EffectTest, Effect_Delay)
 {
     // Check default constructor
     Effect_Delay delay;
-    EXPECT_EQ(delay.m_delay_time, 0);
+    EXPECT_EQ(delay.m_amount, 0);
     EXPECT_EQ(delay.m_speed, 0);
     EXPECT_EQ(delay.m_decay, 0);
     EXPECT_EQ(delay.m_attack, 0);
@@ -26,13 +26,13 @@ TEST(EffectTest, Effect_Delay)
 
     // Check parameter constructor
     srand(0);
-    float delay_time = (float)rand() / RAND_MAX;
+    float amount = (float)rand() / RAND_MAX;
     float speed = (float)rand() / RAND_MAX;
     float decay = (float)rand() / RAND_MAX;
     float attack = (float)rand() / RAND_MAX;
     bool on = true;
-    Effect_Delay delay2(delay_time, speed, decay, attack, on);
-    EXPECT_EQ(delay2.m_delay_time, delay_time);
+    Effect_Delay delay2(amount, speed, decay, attack, on);
+    EXPECT_EQ(delay2.m_amount, amount);
     EXPECT_EQ(delay2.m_speed, speed);
     EXPECT_EQ(delay2.m_decay, decay);
     EXPECT_EQ(delay2.m_attack, attack);
@@ -42,7 +42,7 @@ TEST(EffectTest, Effect_Delay)
     char delay_serial[256];
     delay2.serialize(delay_serial);
     Effect_Delay delay3(delay_serial);
-    EXPECT_EQ(delay3.m_delay_time, delay_time);
+    EXPECT_EQ(delay3.m_amount, amount);
     EXPECT_EQ(delay3.m_speed, speed);
     EXPECT_EQ(delay3.m_decay, decay);
     EXPECT_EQ(delay3.m_attack, attack);
@@ -175,6 +175,55 @@ TEST(EffectTest, Effect_Unknown)
     char unk_serial[256];
     unk.serialize(unk_serial);
     Effect_Unknown unk2(unk_serial);
+}
+
+// All effects, checking parsing
+TEST(EffectTest, JSONParse)
+{
+    // Get config file and parse
+    char configFilepath[1024];
+    strcpy(configFilepath, string(configLocation + "mapping.json").c_str());
+    Json::Value config;
+    parseJSONFile(configFilepath, config);
+
+    // Now make sure constructors properly get default values
+    // Get all the configs
+    Json::Value configP0 = config["profile0"];
+    Json::Value configDistortion = configP0["distortion"];
+    Json::Value configP1 = config["profile1"];
+    Json::Value configEqualizer = configP1["equalizer"];  
+    Json::Value configP2 = config["profile2"];
+    Json::Value configLowpass = configP2["lowpass"]; 
+    Json::Value configDelay = configP2["delay"];
+    Json::Value configP3 = config["profile3"];
+    Json::Value configReverb = configP3["reverb"];
+
+    // Make effects
+    Effect_Delay delay(configDelay);
+    Effect_Distortion distortion(configDistortion);
+    Effect_Equalizer equalizer(configEqualizer);
+    Effect_Lowpass lowpass(configLowpass);
+    Effect_Reverb reverb(configReverb);    
+
+    // Check values are same as defaults in config file
+    EXPECT_EQ(delay.m_amount, 0);
+    EXPECT_EQ(delay.m_speed, 0);
+    EXPECT_EQ(delay.m_decay, 0);
+    EXPECT_EQ(delay.m_attack, 0);
+    EXPECT_EQ(delay.m_on, 0);
+    EXPECT_EQ(distortion.m_amount, 0);
+    EXPECT_EQ(distortion.m_on, 0);
+    EXPECT_EQ(equalizer.m_lowmid, 600);
+    EXPECT_EQ(equalizer.m_midhigh, 6000);
+    EXPECT_EQ(equalizer.m_base_gain, 0);
+    EXPECT_EQ(equalizer.m_mid_gain, 0);
+    EXPECT_EQ(equalizer.m_treb_gain, 0);
+    EXPECT_EQ(equalizer.m_on, 0);
+    EXPECT_EQ(lowpass.m_cutoff, 12000);
+    EXPECT_EQ(lowpass.m_resonance, 0);
+    EXPECT_EQ(lowpass.m_on, 0);
+    EXPECT_EQ(reverb.m_amount, 0);
+    EXPECT_EQ(reverb.m_on, 0);
 }
 
 /*---------------------------------

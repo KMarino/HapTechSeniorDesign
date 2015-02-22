@@ -4,6 +4,8 @@
 #include <string>
 #include "eventinfo.h"
 #include "hwstate.h"
+#include "profile.h"
+#include <sstream>
 
 using namespace std;
 
@@ -23,6 +25,7 @@ private:
     bool updateKeyProfile(EventInfo event);    
 
     HWState m_hw;
+    vector<Profile> m_profiles;
 };
 
 #endif // EFFECTS_MODEL_H
