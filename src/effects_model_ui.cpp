@@ -14,33 +14,27 @@ void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
 	//key is input as char, e.g. key=='a' = true
 	switch (key){
-		case 'a': transx += .001; break;
-		case 'b': transy += .001; break;
+		case 'a': transx = .01; break;
+		case 'b': transy = .01; break;
 	}
-	glutPostRedisplay();
+	//glutPostRedisplay();
 	
 }
 
 void mouse(int button, int state, int x, int y){
-	//button should not matter, just state
-	//state is GLUT_DOWN or GLUT_UP
+	transx = ((float)x-240)/240;
+	transy = (136-(float)y)/136;
+}
+
+void mouseMove(int x, int y){
+	transx = ((float)x-240)/240;
+	transy = (136-(float)y)/136;
 }
 
 void display(){
-	//draw here
-	/*GLfloat radius = 0.5; //circle radius (relative to screen borders)
 	glClear(GL_COLOR_BUFFER_BIT); //clear all
 	glColor3f(1.0,1.0,1.0); //draw white circle
-	glLineWidth(2.0); //thickness of lines
-	glBegin(GL_LINE_LOOP); //draw lines where first point connects to last
-	for(int i=0; i<360; i++){
-		float theta = i*M_PI/180; //each point on a circle
-		glVertex2f(radius*cos(theta), radius*sin(theta)); 
-	}
-	glEnd();*/
-	glClear(GL_COLOR_BUFFER_BIT); //clear all
-	glColor3f(1.0,1.0,1.0); //draw white circle
-	GLdouble innerRad = .01;
+	GLdouble innerRad = 0.0; //variables for drawing
 	GLdouble outerRad = .2;
 	GLint slices = 100;
 	GLint loops = 100;
@@ -48,9 +42,13 @@ void display(){
 	GLdouble sweep = 360;
 	gluPartialDisk(quad, innerRad, outerRad, slices, loops, start, sweep);
 	//GLUquadric*, GLdouble, GLdouble, GLint (subdivisions around z axis), GLint (concentric rings about origin for subdivision), GLdouble (start angle in deg), GLdouble (sweep angle in deg)
-	glTranslatef(transx, transy, transz);
+	glLoadIdentity(); //need to reset translation
+	glTranslatef(0,0,0);
+	glTranslatef(transx, transy, transz); //translate
+	glScalef(0.5666,1.0,1.0); //make a circle, not an oval
 	//swap buffers and redraw
 	glutSwapBuffers();
+	glutPostRedisplay();
 }
 
 int main(int argc, char** argv){
@@ -63,10 +61,12 @@ int main(int argc, char** argv){
 	//glutFullScreen(); //fullscreen (no window border)
 	glutDisplayFunc(display); //use the display func to draw
 	glutMouseFunc(mouse);
+	glutMotionFunc(mouseMove);
 	glutKeyboardFunc(keyboard);
 	quad = gluNewQuadric();
 		if (quad==0) exit(0);
 	gluQuadricDrawStyle(quad, GLU_FILL);
+	glScalef(0.5666,1.0,1.0); //make it a circle
 	glutMainLoop(); //do it all over and over
 	gluDeleteQuadric(quad);
 return 0;
