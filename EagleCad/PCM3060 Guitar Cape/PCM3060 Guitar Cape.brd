@@ -1129,7 +1129,6 @@ design rules under a new name.</description>
 <contactref element="R20" pad="2"/>
 <contactref element="R22" pad="2"/>
 <contactref element="C20" pad="2"/>
-<contactref element="J2" pad="TN"/>
 <contactref element="J2" pad="SN"/>
 <contactref element="J2" pad="S"/>
 <contactref element="JP2" pad="RING1"/>

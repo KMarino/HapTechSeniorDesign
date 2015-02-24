@@ -5273,11 +5273,6 @@ JST PH 2-pin thru-home side entry</description>
 <pinref part="JP2" gate="G$1" pin="SLEEVE"/>
 </segment>
 <segment>
-<pinref part="J2" gate="G$1" pin="TN"/>
-<wire x1="-96.52" y1="-157.48" x2="-91.44" y2="-157.48" width="0.1524" layer="91"/>
-<label x="-91.44" y="-157.48" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="J2" gate="G$1" pin="SN"/>
 <wire x1="-96.52" y1="-152.4" x2="-91.44" y2="-152.4" width="0.1524" layer="91"/>
 <wire x1="-91.44" y1="-152.4" x2="-91.44" y2="-149.86" width="0.1524" layer="91"/>
