@@ -18,6 +18,8 @@ public:
     EffectsModel();
     EffectsModel(const char* hwConfigFile, const char* mappingConfigFile);
     void updateModel(EventInfo event);
+    int getTouchWidth();
+    int getTouchHeight();
 
 private:
     void updateDSP();
