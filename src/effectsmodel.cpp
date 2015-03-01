@@ -85,7 +85,7 @@ bool EffectsModel::updateSwitchDials()
         int pin = m_hw.getPinNumber(SWITCH, idx);
         float value = 0;
 
-        // TODO - Get voltage value on pin       
+        // TODO - Get voltage value on pin     
 
         //m_hw.setValue(SWITCH, idx, value);
     }
