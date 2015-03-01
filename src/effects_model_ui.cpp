@@ -8,12 +8,10 @@
 
 using namespace std;
 
-#define SCREENWIDTH 480 
-#define SCREENHEIGHT 272
-
 GLUquadric* quad;
 float transx, transy, transz = 0;
 EffectsModel* model;
+int screenWidth, screenHeight;
 
 void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
@@ -24,16 +22,16 @@ void keyboard(unsigned char key, int x, int y){
 }
 
 void mouse(int button, int state, int x, int y){
-	transx = ((float)x-(SCREENWIDTH/2))/(SCREENWIDTH/2);
-	transy = ((SCREENHEIGHT/2)-(float)y)/(SCREENHEIGHT/2);
-	EventInfo event(x+(SCREENWIDTH/2),y+(SCREENHEIGHT/2));
+	transx = ((float)x-(screenWidth/2))/(screenWidth/2);
+	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
+	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
 	model->updateModel(event);
 }
 
 void mouseMove(int x, int y){
-	transx = ((float)x-(SCREENWIDTH/2))/(SCREENWIDTH/2);
-	transy = ((SCREENHEIGHT/2)-(float)y)/(SCREENHEIGHT/2);
-	EventInfo event(x+(SCREENWIDTH/2),y+(SCREENHEIGHT/2));
+	transx = ((float)x-(screenWidth/2))/(screenWidth/2);
+	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
+	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
 	model->updateModel(event);
 }
 
@@ -74,9 +72,11 @@ int main(int argc, char** argv){
 		printf("Usage: %s hwConfigFile mappingConfigFile\n", argv[0]);
 		exit(0);
 	}
-	model = new EffectsModel(argv[1], argv[2]);
+	model = new EffectsModel(argv[1], argv[2]); //pass file names to config
+	screenHeight = model->getTouchHeight(); //get touchscreen width and height from config
+	screenWidth = model->getTouchWidth();
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //double buffering, rgba
-	glutInitWindowSize(480, 272); //size of BBB touchscreen
+	glutInitWindowSize(screenWidth, screenHeight); //size of BBB touchscreen
 	glutInitWindowPosition(0,0); //aligned to corner
 	glutCreateWindow("HapTech Guitar Effects"); //open a window
 	glClearColor(0.0,0.0,0.0,0.0); //clear screen in black
