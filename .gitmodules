@@ -1,0 +1,3 @@
+[submodule "aquila"]
+ path = extern/aquila
+ url = git://github.com/zsiciarz/aquila.git
