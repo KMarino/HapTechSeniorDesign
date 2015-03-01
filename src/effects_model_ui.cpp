@@ -13,6 +13,7 @@ using namespace std;
 
 GLUquadric* quad;
 float transx, transy, transz = 0;
+EffectsModel* model;
 
 void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
@@ -32,6 +33,12 @@ void mouseMove(int x, int y){
 	transx = ((float)x-(SCREENWIDTH/2))/(SCREENWIDTH/2);
 	transy = ((SCREENHEIGHT/2)-(float)y)/(SCREENHEIGHT/2);
 	EventInfo event(x+(SCREENWIDTH/2),y+(SCREENHEIGHT/2));
+}
+
+void closeWin(){
+	printf("Exiting.\n");
+	delete model;
+	gluDeleteQuadric(quad);
 }
 
 void display(){
@@ -56,6 +63,11 @@ void display(){
 
 int main(int argc, char** argv){
 	glutInit(&argc, argv);
+	if(argc!=3){
+		printf("Usage: %s hwConfigFile mappingConfigFile\n", argv[0]);
+		exit(0);
+	}
+	model = new EffectsModel(argv[1], argv[2]);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //double buffering, rgba
 	glutInitWindowSize(480, 272); //size of BBB touchscreen
 	glutInitWindowPosition(0,0); //aligned to corner
@@ -66,11 +78,11 @@ int main(int argc, char** argv){
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMove);
 	glutKeyboardFunc(keyboard);
+	glutCloseFunc(closeWin);
 	quad = gluNewQuadric();
 		if (quad==0) exit(0);
 	gluQuadricDrawStyle(quad, GLU_FILL);
 	glScalef(0.5666,1.0,1.0); //make it a circle
 	glutMainLoop(); //do it all over and over
-	gluDeleteQuadric(quad);
 return 0;
 }
