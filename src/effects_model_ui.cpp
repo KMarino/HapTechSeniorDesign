@@ -37,6 +37,8 @@ void mouseMove(int x, int y){
 
 void closeWin(){
 	printf("Exiting.\n");
+	delete model;
+	gluDeleteQuadric(quad);
 }
 
 void display(){
@@ -82,6 +84,5 @@ int main(int argc, char** argv){
 	gluQuadricDrawStyle(quad, GLU_FILL);
 	glScalef(0.5666,1.0,1.0); //make it a circle
 	glutMainLoop(); //do it all over and over
-	gluDeleteQuadric(quad);
 return 0;
 }
