@@ -1,4 +1,5 @@
 #include "effectsmodel.h"
+#include "eventinfo.h"
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -7,28 +8,30 @@
 
 using namespace std;
 
+#define SCREENWIDTH 480 
+#define SCREENHEIGHT 272
+
 GLUquadric* quad;
 float transx, transy, transz = 0;
 
 void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
 	//key is input as char, e.g. key=='a' = true
-	switch (key){
-		case 'a': transx = .01; break;
-		case 'b': transy = .01; break;
-	}
-	//glutPostRedisplay();
+	EventInfo event(key);
+	glutPostRedisplay();
 	
 }
 
 void mouse(int button, int state, int x, int y){
-	transx = ((float)x-240)/240;
-	transy = (136-(float)y)/136;
+	transx = ((float)x-(SCREENWIDTH/2))/(SCREENWIDTH/2);
+	transy = ((SCREENHEIGHT/2)-(float)y)/(SCREENHEIGHT/2);
+	EventInfo event(x+(SCREENWIDTH/2),y+(SCREENHEIGHT/2));
 }
 
 void mouseMove(int x, int y){
-	transx = ((float)x-240)/240;
-	transy = (136-(float)y)/136;
+	transx = ((float)x-(SCREENWIDTH/2))/(SCREENWIDTH/2);
+	transy = ((SCREENHEIGHT/2)-(float)y)/(SCREENHEIGHT/2);
+	EventInfo event(x+(SCREENWIDTH/2),y+(SCREENHEIGHT/2));
 }
 
 void display(){
