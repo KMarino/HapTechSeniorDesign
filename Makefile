@@ -1,23 +1,28 @@
 # Compiler
 CXX =g++
 
-# Compile flags
-CFLAGS += -O3 -isystem extern/gtest-1.7.0/include -std=c++11
-
-#Libraries
-LIBS += -L/usr/local/lib/ -L/usr/lib extern/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so extern/gtest-1.7.0/make/gtest.a extern/aquila/lib/libAquila.a -lglut -lGL -lGLU -lpthread
-
-#Includes
-INCS += -Iinclude -Iextern/gtest-1.7.0 -Iextern/jsoncpp-src-0.5.0/include/ -Iextern/aquila/include/aquila
-
-#Suffixes
-.SUFFIXES: .o .h .c .hpp .cpp
+PLATFORM =linux-gcc
 
 # Directories
 SRCDIR = src
 BINDIR = bin
 INCDIR = include
 EXTDIR = extern
+
+# Compile flags
+CFLAGS += -O3 -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
+
+#Libraries
+LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU -lpthread \
+	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so \
+	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
+	$(EXTDIR)/aquila/lib/libAquila.a
+
+#Includes
+INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila/include/aquila
+
+#Suffixes
+.SUFFIXES: .o .h .c .hpp .cpp
 
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
@@ -82,7 +87,6 @@ deps:
 	# gtest
 	$(MAKE) -C $(EXTDIR)/gtest-1.7.0/make gtest.a
 	# jsoncpp
-	scons -C $(EXTDIR)/jsoncpp-src-0.5.0 platform=linux-gcc check
+	scons -C $(EXTDIR)/jsoncpp-src-0.5.0 platform=$(PLATFORM) check
 	#aquila
 	$(MAKE) -C $(EXTDIR)/aquila-src all install
-	
