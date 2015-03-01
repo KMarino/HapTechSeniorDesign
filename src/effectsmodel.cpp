@@ -23,6 +23,9 @@ EffectsModel::EffectsModel(const char* hwConfigFile, const char* mappingConfigFi
         string profileStr = ss.str();
         m_profiles.push_back(Profile(config[profileStr], m_hw));
     }
+
+    // Set current profile to 0 as default
+    m_curProfile = 0;
 }
 
 void EffectsModel::updateModel(EventInfo event)

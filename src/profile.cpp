@@ -77,7 +77,6 @@ void Profile::update(HWState hw)
     {
         // Get mapping information
         ControlInfo key(POTENTIOMETER, idx);
-	cout << m_mapping.size() << endl;
         if (m_mapping.count(key) == 0)
         {
             continue;   // This control doesn't map to anything
