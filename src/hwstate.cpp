@@ -46,8 +46,13 @@ HWState::HWState(const char* configfile)
         char key = keys.get(i, "?").asString().at(0);
         m_devices.push_back(Control_Push(push_pin, key));
         m_device_types.push_back(PUSHBUTTON);
-        m_push_chars.push_back(key);
+        m_push_chars[key] = i;
+        //m_push_chars.push_back(key);
     }
+
+    // Touchscreen starts at (0, 0)
+    m_touch_x = 0;
+    m_touch_y = 0;
 }
 
 int HWState::getPinNumber(ControlType type, int index)
@@ -75,6 +80,26 @@ int HWState::getPinNumber(ControlType type, int index)
 
 float HWState::getValue(ControlType type, int index)
 {
+    if (type == TOUCHSCREEN)
+    {
+        if (index == 0)
+        {
+            // Index 0 of touchscreen is y control. Returns y position
+            return m_touch_y;
+        }
+        else if (index == 1)
+        {
+            // Index 1 of touchscreen is x control. Returns x position
+            return m_touch_x;
+        }
+        else
+        {
+            // Makes no sense. Failure
+            throw std::runtime_error("Invalid index for touchscreen control. Only have 0 (y) and 1 (x)");
+            return -1;
+        }
+    }
+
     float value = -1;
     int device_idx = 0;
     for (int i = 0; i < m_devices.size(); i++)
@@ -95,10 +120,50 @@ float HWState::getValue(ControlType type, int index)
     // Return -1 (failure)
     return value;
 }
-    
-char HWState::getButtonChar(int index)
+
+void HWState::setValue(ControlType type, int index, float value)
 {
-    return m_push_chars[index];
+    if (type == TOUCHSCREEN)
+    {
+        if (index == 0)
+        {
+            // Index 0 of touchscreen is y control. Set y position
+            m_touch_y = (int)value;
+        }
+        else if (index == 1)
+        {
+            // Index 1 of touchscreen is x control. Set x position
+            m_touch_x = (int)value;
+        }
+        else
+        {
+            // Makes no sense. Failure
+            throw std::runtime_error("Invalid index for touchscreen control. Only have 0 (y) and 1 (x)");
+        }
+        return;
+    }
+
+    // Other devices
+    int device_idx = 0;
+    for (int i = 0; i < m_devices.size(); i++)
+    {        
+        if (m_device_types[i] == type)
+        {
+            if (device_idx == index)
+            {
+                m_devices[i].updateValue(value);
+            }
+            else
+            {
+                device_idx++;
+            }
+        }
+    }
+}
+
+int HWState::getButtonIndex(char c)
+{
+    return m_push_chars[c];
 }
 
 int HWState::getNumPot()

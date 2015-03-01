@@ -4,6 +4,7 @@
 #include "optparser.h"
 #include <cassert>
 #include <vector>
+#include <stdexcept>
 
 using namespace std;
 
@@ -125,7 +126,8 @@ public:
 
     int getPinNumber(ControlType type, int index);
     float getValue(ControlType type, int index);
-    char getButtonChar(int index);
+    void setValue(ControlType type, int index, float value);
+    int getButtonIndex(char c);
     int getNumPot();
     int getNumSwitch();
     int getNumPush();
@@ -140,10 +142,12 @@ private:
     int m_num_push;
     int m_num_control;
     int m_touchscreen_size[2];
-    float m_logic_level;
+    int m_touch_x;
+    int m_touch_y;
+    double m_logic_level;
     vector<Control> m_devices;
-    vector<char> m_push_chars;
     vector<ControlType> m_device_types;
+    map<char, int> m_push_chars;
 };
 
 ControlType getControlType(string controlstr);

@@ -19,6 +19,8 @@ enum EffectType
     UNKNOWNEFFECT
 };
 
+int getEffectSize(EffectType type);
+
 // Virtual class for effects. Holds all of the parameters of the effect
 class Effect
 {
@@ -30,7 +32,7 @@ public:
 
 // Typedefs and structs
 // <What type of hardware control, index of control>
-typedef pair<ControlType, int> control_info;
+typedef pair<ControlType, int> ControlInfo;
 
 // <Pointer to effect object, attribute, how to scale, min, max>
 class EffectInfo
