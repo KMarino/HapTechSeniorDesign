@@ -505,6 +505,28 @@ EffectType getEffectType(string effectstr)
         // Does not match a class
         return UNKNOWNEFFECT;
     }
-
 }
 
+int getEffectSize(EffectType type)
+{
+    switch (type)
+    {
+        case DELAY:
+            return sizeof(Effect_Delay);
+
+        case DISTORTION:
+            return sizeof(Effect_Distortion);
+        
+        case EQUALIZER:
+            return sizeof(Effect_Equalizer);
+
+        case LOWPASS:
+            return sizeof(Effect_Lowpass);
+
+        case REVERB:
+            return sizeof(Effect_Reverb);
+        
+        case UNKNOWNEFFECT:
+            return sizeof(Effect_Unknown);
+    }
+}

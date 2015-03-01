@@ -3,6 +3,7 @@
 
 #include "hwstate.h"
 #include "effect.h"
+#include <math.h>
 #include <stdexcept>
 
 using namespace std;
@@ -13,15 +14,18 @@ class Profile
 {
 public:
     Profile();
+    ~Profile();
     Profile(Json::Value config, HWState hw);
     void update(HWState hw);
+    vector<Effect*> getEffectCopy();
+    vector<EffectType> getEffectTypes();
 
 private:
     void updateMapping(Json::Value config, Effect* effect, string attribute); 
     void updateMappingAttr(Json::Value config, Effect* effect, string attributestr);
     vector<EffectType> m_effect_types;
     vector<Effect*> m_effects;
-    map<control_info, EffectInfo> m_mapping;
+    map<ControlInfo, EffectInfo> m_mapping;
     float m_logic_level;    // logic level from HWState
 };
 

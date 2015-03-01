@@ -1,11 +1,16 @@
-.jpg
-.pgm
-.rf
-.swp
+*.jpg
+*.pgm
+*.rf
+*.swp
 
-/bin
-/temp
-/data
-/output
+bin/*
+temp
+data
+output
 
 *~
+
+*.pyc
+*.o
+*.a
+*.lo
