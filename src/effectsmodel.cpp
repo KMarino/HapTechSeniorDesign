@@ -51,6 +51,16 @@ void EffectsModel::updateModel(EventInfo event)
     // TODO - should this be here, or somewhere in main file that calls this
 }
 
+int EffectsModel::getTouchWidth()
+{
+    return m_hw.getTouchWidth();
+}
+    
+int EffectsModel::getTouchHeight()
+{
+    return m_hw.getTouchHeight();
+}
+
 void EffectsModel::updateDSP()
 {
     // Get effects message
