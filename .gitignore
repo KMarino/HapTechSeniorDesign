@@ -9,3 +9,8 @@
 /output
 
 *~
+
+.pyc
+.o
+.a
+.lo
