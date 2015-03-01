@@ -8,6 +8,7 @@
 
 using namespace std;
 
+//global inits
 GLUquadric* quad;
 float transx, transy, transz = 0;
 EffectsModel* model;
@@ -22,6 +23,7 @@ void keyboard(unsigned char key, int x, int y){
 }
 
 void mouse(int button, int state, int x, int y){
+	//adjust x, y position
 	transx = ((float)x-(screenWidth/2))/(screenWidth/2);
 	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
@@ -29,6 +31,7 @@ void mouse(int button, int state, int x, int y){
 }
 
 void mouseMove(int x, int y){
+	//adjust x, y position
 	transx = ((float)x-(screenWidth/2))/(screenWidth/2);
 	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
@@ -41,6 +44,7 @@ void timer(int n){
 }
 
 void closeWin(){
+	//on window close (program end)
 	printf("Exiting.\n");
 	delete model;
 	gluDeleteQuadric(quad);
@@ -49,7 +53,8 @@ void closeWin(){
 void display(){
 	glClear(GL_COLOR_BUFFER_BIT); //clear all
 	glColor3f(1.0,1.0,1.0); //draw white circle
-	GLdouble innerRad = 0.0; //variables for drawing
+	//GLUPartialDisk variables for drawing	
+	GLdouble innerRad = 0.0; 
 	GLdouble outerRad = .2;
 	GLint slices = 100;
 	GLint loops = 100;
@@ -73,7 +78,8 @@ int main(int argc, char** argv){
 		exit(0);
 	}
 	model = new EffectsModel(argv[1], argv[2]); //pass file names to config
-	screenHeight = model->getTouchHeight(); //get touchscreen width and height from config
+	//get touchscreen width and height from config
+	screenHeight = model->getTouchHeight(); 
 	screenWidth = model->getTouchWidth();
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //double buffering, rgba
 	glutInitWindowSize(screenWidth, screenHeight); //size of BBB touchscreen
@@ -81,16 +87,18 @@ int main(int argc, char** argv){
 	glutCreateWindow("HapTech Guitar Effects"); //open a window
 	glClearColor(0.0,0.0,0.0,0.0); //clear screen in black
 	//glutFullScreen(); //fullscreen (no window border)
-	glutDisplayFunc(display); //use the GL event functions
+	//use the GL event functions
+	glutDisplayFunc(display); 
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMove);
 	glutKeyboardFunc(keyboard);
 	glutTimerFunc(10, timer, 0); //msecs, timerfunc,input
 	glutCloseFunc(closeWin);
-	quad = gluNewQuadric(); //init quadric for drawing
+	//init quadric for drawing
+	quad = gluNewQuadric(); 
 		if (quad==0) exit(0);
 	gluQuadricDrawStyle(quad, GLU_FILL);
 	glScalef(0.5666,1.0,1.0); //make it a circle
 	glutMainLoop(); //do it all over and over
-return 0;
+	return 0;
 }
