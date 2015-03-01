@@ -19,7 +19,7 @@ void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
 	//key is input as char, e.g. key=='a' = true
 	EventInfo event(key);
-	model.updateModel(event);
+	model->updateModel(event);
 	//glutPostRedisplay();
 }
 
@@ -27,19 +27,19 @@ void mouse(int button, int state, int x, int y){
 	transx = ((float)x-(SCREENWIDTH/2))/(SCREENWIDTH/2);
 	transy = ((SCREENHEIGHT/2)-(float)y)/(SCREENHEIGHT/2);
 	EventInfo event(x+(SCREENWIDTH/2),y+(SCREENHEIGHT/2));
-	model.updateModel(event);
+	model->updateModel(event);
 }
 
 void mouseMove(int x, int y){
 	transx = ((float)x-(SCREENWIDTH/2))/(SCREENWIDTH/2);
 	transy = ((SCREENHEIGHT/2)-(float)y)/(SCREENHEIGHT/2);
 	EventInfo event(x+(SCREENWIDTH/2),y+(SCREENHEIGHT/2));
-	model.updateModel(event);
+	model->updateModel(event);
 }
 
 void timer(int n){
-	EventInfo event();
-	model.updateModel(event);
+	EventInfo event;
+	model->updateModel(event);
 }
 
 void closeWin(){
