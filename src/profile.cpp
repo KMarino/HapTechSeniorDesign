@@ -174,11 +174,11 @@ void Profile::update(HWState hw)
         int num_pixels = 1;
         if (idx == 0)
         {
-            num_pixels = hw.getTouchHeight();   // Index 0 of touchscreen is y control
+            num_pixels = hw.getTouchWidth();    // Index 0 of touchscreen is x control
         }
         else
         {
-            num_pixels = hw.getTouchWidth();    // Index 1 of touchscreen is x control
+            num_pixels = hw.getTouchHeight();   // Index 1 of touchscreen is y control    
         }
 
         // Convert to attribute value and call effect's update
