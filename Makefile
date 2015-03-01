@@ -2,13 +2,13 @@
 CXX =g++
 
 # Compile flags
-CFLAGS += -O3 -isystem extern/gtest-1.7.0/include
+CFLAGS += -O3 -isystem extern/gtest-1.7.0/include -std=c++11
 
 #Libraries
-LIBS += -L/usr/local/lib/ -L/usr/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a -lglut -lGL -lGLU
+LIBS += -L/usr/local/lib/ -L/usr/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a extern/aquila/lib/libAquila.a -lglut -lGL -lGLU -lpthread
 
 #Includes
-INCS += -Iinclude -Iextern/gtest-1.7.0 -Iextern/jsoncpp-src-0.5.0/include/
+INCS += -Iinclude -Iextern/gtest-1.7.0 -Iextern/jsoncpp-src-0.5.0/include/ -Iextern/aquila/include/aquila
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
@@ -21,10 +21,13 @@ INCDIR = include
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
 
-all: $(BINDIR)/effects_model_ui $(BINDIR)/unit_test
+all: $(BINDIR)/effects_model_ui $(BINDIR)/dsp $(BINDIR)/unit_test 
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/dsp: $(BINDIR)/dsp.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/dsp $(BINDIR)/dsp.o $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
 	$(CXX) $(CFLAGS) -o $(BINDIR)/unit_test $(BINDIR)/unittesting.o $(OBJS) $(LIBS) ${INCS}
@@ -33,6 +36,10 @@ $(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
 $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp 
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effects_model_ui.o $(SRCDIR)/effects_model_ui.cpp ${INCS}
+
+$(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp.o $(SRCDIR)/dsp.cpp ${INCS}
 
 $(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
 	@echo $<
