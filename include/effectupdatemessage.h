@@ -18,6 +18,8 @@ public:
     ~EffectUpdateMessage();
     void serialize(char* output);
     bool issame(const EffectUpdateMessage& other);
+    vector<EffectType> getEffectTypes();
+    vector<Effect*> getEffects();
 
 private:
     vector<EffectType> m_effect_types;
