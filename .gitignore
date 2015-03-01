@@ -3,10 +3,10 @@
 *.rf
 *.swp
 
-/bin
-/temp
-/data
-/output
+bin/*
+temp
+data
+output
 
 *~
 
