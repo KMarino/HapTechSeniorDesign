@@ -17,6 +17,7 @@ INCS += -Iinclude -Iextern/gtest-1.7.0 -Iextern/jsoncpp-src-0.5.0/include/ -Iext
 SRCDIR = src
 BINDIR = bin
 INCDIR = include
+EXTDIR = extern
 
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
@@ -75,3 +76,13 @@ $(BINDIR)/unittesting.o: $(SRCDIR)/unittesting.cpp $(INCDIR)/effect.h $(INCDIR)/
 
 clean:
 	rm -rf ${BINDIR}/*
+
+
+deps:
+	# gtest
+	$(MAKE) -C $(EXTDIR)/gtest-1.7.0/make gtest.a
+	# jsoncpp
+	scons -C $(EXTDIR)/jsoncpp-src-0.5.0 platform=linux-gcc check
+	#aquila
+	$(MAKE) -C $(EXTDIR)/aquila-src all install
+	
