@@ -84,18 +84,18 @@ float HWState::getValue(ControlType type, int index)
     {
         if (index == 0)
         {
-            // Index 0 of touchscreen is y control. Returns y position
-            return m_touch_y;
+            // Index 0 of touchscreen is x control. Returns x position
+            return m_touch_x;
         }
         else if (index == 1)
         {
-            // Index 1 of touchscreen is x control. Returns x position
-            return m_touch_x;
+            // Index 1 of touchscreen is y control. Returns y position
+            return m_touch_y;
         }
         else
         {
             // Makes no sense. Failure
-            throw std::runtime_error("Invalid index for touchscreen control. Only have 0 (y) and 1 (x)");
+            throw std::runtime_error("Invalid index for touchscreen control. Only have 0 (x) and 1 (y)");
             return -1;
         }
     }
@@ -127,13 +127,13 @@ void HWState::setValue(ControlType type, int index, float value)
     {
         if (index == 0)
         {
-            // Index 0 of touchscreen is y control. Set y position
-            m_touch_y = (int)value;
+            // Index 0 of touchscreen is x control. Set x position
+            m_touch_x = (int)value;
         }
         else if (index == 1)
         {
-            // Index 1 of touchscreen is x control. Set x position
-            m_touch_x = (int)value;
+            // Index 1 of touchscreen is y control. Set y position
+            m_touch_y = (int)value;
         }
         else
         {
@@ -188,12 +188,12 @@ int HWState::getNumDevices()
 
 int HWState::getTouchWidth()
 {
-    return m_touchscreen_size[1];
+    return m_touchscreen_size[0];
 }
 
 int HWState::getTouchHeight()
 {
-    return m_touchscreen_size[0];
+    return m_touchscreen_size[1];
 }
 
 float HWState::getLogicLevel()

@@ -94,10 +94,8 @@ bool EffectsModel::updateSwitchDials()
 bool EffectsModel::updateMouse(EventInfo event)
 {
     // Update hw values
-    m_hw.setValue(TOUCHSCREEN, 1, event.m_mouse_x);  // Set x value
-    m_hw.setValue(TOUCHSCREEN, 0, event.m_mouse_y);  // Set y value
-    
-    // TODO - check all these TOUCHSCREEN indices, x as 1 makes no sense really    
+    m_hw.setValue(TOUCHSCREEN, 0, event.m_mouse_x);  // Set x value
+    m_hw.setValue(TOUCHSCREEN, 1, event.m_mouse_y);  // Set y value  
 }
 
 bool EffectsModel::updateKeyProfile(EventInfo event)
