@@ -6,9 +6,14 @@
 
 #### Clone submodules
 
+Git submodules are sub-repositories. It keeps your repo from tracking all of the files and changes to it.
+To clone all submodules:
+
     git submodule update --init
 
 #### Auquila
+
+Aquila must be built with `cmake`, which doesn't play nice with `make`
 
     cd extern/aquila-src
     cmake -DCMAKE_INSTALL_PREFIX="../aquila"
@@ -16,9 +21,11 @@
 
 #### Build Included dependencies
 
+This will build gtest, jsoncpp, and aquila
+
     make deps
 
-If you end up with a bunch of untracked files, you can uncheck them out (e.g. `git reset --hard HEAD`).
+If afterwards you end up with a bunch of untracked files, you can uncheck them out (e.g. `git reset --hard HEAD`).
 The binaries will still exist. If submodules keep saying 'untracked', e.g.
 `modified: extern/aquila-src (untracked content)`, try
 
