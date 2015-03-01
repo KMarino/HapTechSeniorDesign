@@ -136,3 +136,13 @@ bool EffectUpdateMessage::issame(const EffectUpdateMessage& other)
     return same;
 }
 
+vector<EffectType> EffectUpdateMessage::getEffectTypes()
+{
+    return m_effect_types;
+}
+    
+vector<Effect*> EffectUpdateMessage::getEffects()
+{
+    return m_effects;
+}
+
