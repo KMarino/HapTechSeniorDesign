@@ -1,11 +1,17 @@
-.jpg
-.pgm
-.rf
-.swp
+*.jpg
+*.pgm
+*.rf
+*.swp
 
-/bin
-/temp
-/data
-/output
+bin/*
+temp
+data
+output
+extern/aquila
 
 *~
+
+*.pyc
+*.o
+*.a
+*.lo

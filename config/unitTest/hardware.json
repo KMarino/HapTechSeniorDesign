@@ -17,5 +17,8 @@
     "keys": ["a", "s", "d", "f"],
 
     // Touchscreen info
-    "touch_size": [480, 560]
+    "touch_size": [480, 560],
+
+    // Logic voltage level
+    "logic_level": 5.0
 }

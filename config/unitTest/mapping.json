@@ -5,7 +5,7 @@
     "profile0":
     {
 		"num_effects": 	1,
-		"effect_types": ["Distortion"],
+		"effect_types": ["distortion"],
         "distortion":
         {
             "amount":
@@ -13,9 +13,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot0",
+                "hwtype": "pot",
+                "hwidx": 0,
                 "min": 0,
-                "max": 10,
+                "max": 10
             },
 
             "on":
@@ -23,7 +24,8 @@
                 "type": "bool",
                 "default": 0,
                 "control": "switch",
-                "hardware": "switch0"
+                "hwtype": "switch",
+                "hwidx": 0
             }
         }
     },
@@ -31,21 +33,21 @@
     "profile1":
     {
         "num_effects": 	1,
-		"effect_types": ["Equalizer"],
+		"effect_types": ["equalizer"],
         "equalizer":
         {
             "lowmid":
             {
                 "type": "float",
                 "default": 600,
-                "control": "static",
+                "control": "static"
             },
         
             "midhigh":
             {
                 "type": "float",
                 "default": 6000,
-                "control": "static",
+                "control": "static"
             },
     
             "base_gain":
@@ -53,9 +55,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot0",
+                "hwtype": "pot",
+                "hwidx": 0,
                 "min": -20,
-                "max": 20,
+                "max": 20
             },
 
             "mid_gain":
@@ -63,9 +66,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot1",
+                "hwtype": "pot",
+                "hwidx": 1,
                 "min": -20,
-                "max": 20,
+                "max": 20
             },
             
             "treb_gain":
@@ -73,9 +77,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot2",
+                "hwtype": "pot",
+                "hwidx": 2,
                 "min": -20,
-                "max": 20,
+                "max": 20
             },
 
             "on":
@@ -83,7 +88,8 @@
                 "type": "bool",
                 "default": 0,
                 "control": "switch",
-                "hardware": "switch0"
+                "hwtype": "switch",
+                "hwidx": 0
             }
         }
     },
@@ -91,7 +97,7 @@
     "profile2":
     {
 		"num_effects": 	2,
-		"effect_types": ["Lowpass", "Delay"],
+		"effect_types": ["lowpass", "delay"],
         "lowpass":
         {
             "cutoff":
@@ -99,9 +105,10 @@
                 "type": "float",
                 "default": 12000,
                 "control": "log",
-                "hardware": "pot0",
+                "hwtype": "pot",
+                "hwidx": 0,
                 "min": 60,
-                "max": 12000,
+                "max": 12000
             },
 
             "resonance":
@@ -109,9 +116,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot1",
+                "hwtype": "pot",
+                "hwidx": 1,
                 "min": 0,
-                "max": 6,
+                "max": 6
             },
 
             "on":
@@ -119,7 +127,8 @@
                 "type": "bool",
                 "default": 0,
                 "control": "switch",
-                "hardware": "switch0"
+                "hwtype": "switch",
+                "hwidx": 0
             }
         },
 
@@ -130,9 +139,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot1",
+                "hwtype": "pot",
+                "hwidx": 1,
                 "min": 0,
-                "max": 10,
+                "max": 10
             },
 
             "speed":
@@ -140,9 +150,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot2",
+                "hwtype": "pot",
+                "hwidx": 2,
                 "min": 0,
-                "max": 10,
+                "max": 10
             },
 
             "decay":
@@ -150,9 +161,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot3",
+                "hwtype": "touch",
+                "hwidx": 0,
                 "min": 0,
-                "max": 10,
+                "max": 10
             },
 
             "attack":
@@ -160,9 +172,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot4",
+                "hwtype": "pot",
+                "hwidx": 3,
                 "min": 0,
-                "max": 10,
+                "max": 10
             },
 
             "on":
@@ -170,7 +183,8 @@
                 "type": "bool",
                 "default": 0,
                 "control": "switch",
-                "hardware": "switch0"
+                "hwtype": "switch",
+                "hwidx": 0
             }
         }
     },
@@ -178,7 +192,7 @@
     "profile3":
     {
 		"num_effects": 	1,
-		"effect_types": ["Reverb"],
+		"effect_types": ["reverb"],
         "reverb":
         {
             "amount":
@@ -186,9 +200,10 @@
                 "type": "float",
                 "default": 0,
                 "control": "linear",
-                "hardware": "pot0",
+                "hwtype": "pot",
+                "hwidx": 0,
                 "min": 0,
-                "max": 10,
+                "max": 10
             },
 
             "on":
@@ -196,7 +211,8 @@
                 "type": "bool",
                 "default": 0,
                 "control": "switch",
-                "hardware": "switch0"
+                "hwtype": "switch",
+                "hwidx": 0
             }
         }
     }

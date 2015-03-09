@@ -4,6 +4,9 @@
 #include <string>
 #include "eventinfo.h"
 #include "hwstate.h"
+#include "profile.h"
+#include "effectupdatemessage.h"
+#include <sstream>
 
 using namespace std;
 
@@ -13,16 +16,20 @@ class EffectsModel
 {
 public:
     EffectsModel();
-    EffectsModel(char* hwConfigFile, char* mappingConfigFile);
+    EffectsModel(const char* hwConfigFile, const char* mappingConfigFile);
     void updateModel(EventInfo event);
+    int getTouchWidth();
+    int getTouchHeight();
 
 private:
     void updateDSP();
-    bool updateSwitchDials(EventInfo event);
+    bool updateSwitchDials();
     bool updateMouse(EventInfo event);
     bool updateKeyProfile(EventInfo event);    
 
     HWState m_hw;
+    vector<Profile> m_profiles;
+    int m_curProfile;
 };
 
 #endif // EFFECTS_MODEL_H

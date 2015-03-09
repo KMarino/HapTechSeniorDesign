@@ -1,7 +1,10 @@
 #include "effectupdatemessage.h"
 
-EffectUpdateMessage::EffectUpdateMessage(vector<Effect*> effects, vector<EffectType> types)
+EffectUpdateMessage::EffectUpdateMessage(Profile profile)
 {
+    vector<Effect*> effects = profile.getEffectCopy();
+    vector<EffectType> types = profile.getEffectTypes();
+
     // Set environmental variables
     assert(effects.size() == types.size());   
     m_num_effects = effects.size();
@@ -133,27 +136,13 @@ bool EffectUpdateMessage::issame(const EffectUpdateMessage& other)
     return same;
 }
 
-int EffectUpdateMessage::getEffectSize(EffectType type)
+vector<EffectType> EffectUpdateMessage::getEffectTypes()
 {
-    switch (type)
-    {
-        case DELAY:
-            return sizeof(Effect_Delay);
-
-        case DISTORTION:
-            return sizeof(Effect_Distortion);
-        
-        case EQUALIZER:
-            return sizeof(Effect_Equalizer);
-
-        case LOWPASS:
-            return sizeof(Effect_Lowpass);
-
-        case REVERB:
-            return sizeof(Effect_Reverb);
-        
-        case UNKNOWNEFFECT:
-            return sizeof(Effect_Unknown);
-    }
+    return m_effect_types;
+}
+    
+vector<Effect*> EffectUpdateMessage::getEffects()
+{
+    return m_effects;
 }
 

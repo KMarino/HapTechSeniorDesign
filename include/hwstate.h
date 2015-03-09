@@ -4,6 +4,7 @@
 #include "optparser.h"
 #include <cassert>
 #include <vector>
+#include <stdexcept>
 
 using namespace std;
 
@@ -13,7 +14,18 @@ enum ControlType
     POTENTIOMETER,
     SWITCH,
     PUSHBUTTON,
+    TOUCHSCREEN,
     UNKNOWNCONTROL
+};
+
+// Enum for how a parameter scales with hardware
+enum ScaleType
+{
+    LINEAR,
+    LOG,
+    SWITCHSCALE,
+    STATIC,
+    UNKNOWNSCALE
 };
 
 // Virtual class for controls. Holds information needed for control.
@@ -26,12 +38,12 @@ public:
     Control(int pin, ControlType type):
         m_value(0), m_pin(pin), m_type(type) {}
 
-    void updateValue(double value)
+    void updateValue(float value)
     {
         m_value = value; 
     }
 
-    double getValue() 
+    float getValue() 
     {
         return m_value; 
     }
@@ -57,7 +69,7 @@ public:
     }
           
 private:
-    double m_value;     // Analog voltage value of the control. Must be interpreted
+    float m_value;     // Analog voltage value of the control. Must be interpreted
     int m_pin;          // Pin on microcontroller
     ControlType m_type; // Control type
 };
@@ -113,14 +125,16 @@ public:
     HWState(const char* configfile);
 
     int getPinNumber(ControlType type, int index);
-    double getValue(ControlType type, int index);
-    char getButtonChar(int index);
+    float getValue(ControlType type, int index);
+    void setValue(ControlType type, int index, float value);
+    int getButtonIndex(char c);
     int getNumPot();
     int getNumSwitch();
     int getNumPush();
     int getNumDevices();
     int getTouchWidth();
     int getTouchHeight();
+    float getLogicLevel();
 
 private:
     int m_num_pot;
@@ -128,9 +142,15 @@ private:
     int m_num_push;
     int m_num_control;
     int m_touchscreen_size[2];
+    int m_touch_x;
+    int m_touch_y;
+    double m_logic_level;
     vector<Control> m_devices;
-    vector<char> m_push_chars;
     vector<ControlType> m_device_types;
+    map<char, int> m_push_chars;
 };
+
+ControlType getControlType(string controlstr);
+ScaleType getScaleType(string scalestr);
 
 #endif // HWSTATE_H
