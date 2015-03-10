@@ -24,11 +24,11 @@ gtest is also part of the repository.
 
 #### Install Aquilia
 
-    apt-get install sfml    #sfml-dev ????
+    apt-get install libsfml-dev    #sfml-dev ????
 
 Pull the submodule
 
-  git submodule update --init
+  git submodule update --init extern/aquila-src
 
 Build it
 
