@@ -24,7 +24,7 @@ gtest is also part of the repository.
 
 #### Install Aquilia
 
-    apt-get install libsfml-dev    #sfml-dev ????
+    sudo apt-get install libsfml-dev    #sfml-dev ????
 
 Pull the submodule
 

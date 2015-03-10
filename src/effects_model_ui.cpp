@@ -17,9 +17,10 @@ int screenWidth, screenHeight;
 void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
 	//key is input as char, e.g. key=='a' = true
+	if(key=='q') glutReshapeWindow(screenWidth, screenHeight);
 	EventInfo event(key);
 	model->updateModel(event);
-	//glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 void mouse(int button, int state, int x, int y){
@@ -28,6 +29,7 @@ void mouse(int button, int state, int x, int y){
 	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
 	model->updateModel(event);
+	glutPostRedisplay();
 }
 
 void mouseMove(int x, int y){
@@ -36,11 +38,13 @@ void mouseMove(int x, int y){
 	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
 	model->updateModel(event);
+	glutPostRedisplay();
 }
 
 void timer(int n){
 	EventInfo event;
 	model->updateModel(event);
+	glutPostRedisplay();
 }
 
 void closeWin(){
@@ -68,7 +72,7 @@ void display(){
 	glScalef(0.5666,1.0,1.0); //make a circle, not an oval
 	//swap buffers and redraw
 	glutSwapBuffers();
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 int main(int argc, char** argv){
@@ -86,7 +90,7 @@ int main(int argc, char** argv){
 	glutInitWindowPosition(0,0); //aligned to corner
 	glutCreateWindow("HapTech Guitar Effects"); //open a window
 	glClearColor(0.0,0.0,0.0,0.0); //clear screen in black
-	//glutFullScreen(); //fullscreen (no window border)
+	glutFullScreen(); //fullscreen (no window border)
 	//use the GL event functions
 	glutDisplayFunc(display); 
 	glutMouseFunc(mouse);
