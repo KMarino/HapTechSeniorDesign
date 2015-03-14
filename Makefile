@@ -1,30 +1,39 @@
 # Compiler
 CXX =g++
 
-# Compile flags
-CFLAGS += -O3 -isystem extern/gtest-1.7.0/include
-
-#Libraries
-LIBS += -L/usr/local/lib/ -L/usr/lib -ljson_linux-gcc-4.6_libmt extern/gtest-1.7.0/make/gtest.a -lglut -lGL -lGLU -lpthread
-
-#Includes
-INCS += -Iinclude -Iextern/gtest-1.7.0 -Iextern/jsoncpp-src-0.5.0/include/
-
-#Suffixes
-.SUFFIXES: .o .h .c .hpp .cpp
+PLATFORM =linux-gcc
 
 # Directories
 SRCDIR = src
 BINDIR = bin
 INCDIR = include
+EXTDIR = extern
+
+# Compile flags
+CFLAGS += -O3 -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
+
+#Libraries
+LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU -lpthread \
+	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so \
+	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
+	$(EXTDIR)/aquila/lib/libAquila.a
+
+#Includes
+INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila/include/aquila
+
+#Suffixes
+.SUFFIXES: .o .h .c .hpp .cpp
 
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
 
-all: $(BINDIR)/effects_model_ui $(BINDIR)/unit_test
+all: $(BINDIR)/effects_model_ui $(BINDIR)/dsp $(BINDIR)/unit_test 
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/dsp: $(BINDIR)/dsp.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/dsp $(BINDIR)/dsp.o $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
 	$(CXX) $(CFLAGS) -o $(BINDIR)/unit_test $(BINDIR)/unittesting.o $(OBJS) $(LIBS) ${INCS}
@@ -33,6 +42,10 @@ $(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
 $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp 
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effects_model_ui.o $(SRCDIR)/effects_model_ui.cpp ${INCS}
+
+$(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp.o $(SRCDIR)/dsp.cpp ${INCS}
 
 $(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
 	@echo $<
@@ -68,3 +81,12 @@ $(BINDIR)/unittesting.o: $(SRCDIR)/unittesting.cpp $(INCDIR)/effect.h $(INCDIR)/
 
 clean:
 	rm -rf ${BINDIR}/*
+
+
+deps:
+	# gtest
+	$(MAKE) -C $(EXTDIR)/gtest-1.7.0/make gtest.a
+	# jsoncpp
+	scons -C $(EXTDIR)/jsoncpp-src-0.5.0 platform=$(PLATFORM) check
+	#aquila
+	$(MAKE) -C $(EXTDIR)/aquila-src all install
