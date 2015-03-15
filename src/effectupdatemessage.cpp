@@ -98,6 +98,20 @@ EffectUpdateMessage::~EffectUpdateMessage()
     }
 }
 
+EffectUpdateMessage::EffectUpdateMessage(EffectUpdateMessage const& copy)
+{
+    m_msg_sz = copy.m_msg_sz;
+    m_num_effects = copy.m_num_effects;
+    m_effect_types = copy.m_effect_types;
+
+    // Get copy of messages    
+    m_effects = copy.getEffectCopy();
+
+    // Copy actual message
+    m_msg = new char[m_msg_sz];
+    memcpy(m_msg, copy.m_msg, m_msg_sz);
+}
+
 void EffectUpdateMessage::serialize(char* output)
 {
     // Start reading
@@ -141,8 +155,51 @@ vector<EffectType> EffectUpdateMessage::getEffectTypes()
     return m_effect_types;
 }
     
-vector<Effect*> EffectUpdateMessage::getEffects()
+vector<Effect*> EffectUpdateMessage::getEffectCopy() const
 {
-    return m_effects;
+    // Get values from profile
+    vector<Effect*> effects;
+    
+    // Copy over effects
+    for (int i = 0; i < m_effects.size(); i++)
+    {
+        EffectType type = m_effect_types[i];
+        Effect* effect;
+        switch(type)
+        {
+            case DELAY:
+                effect = new Effect_Delay();
+                break;
+
+            case DISTORTION:
+                effect = new Effect_Distortion();
+                break;
+            
+            case EQUALIZER:
+                effect = new Effect_Equalizer();
+                break;
+
+            case LOWPASS:
+                effect = new Effect_Lowpass();
+                break;
+
+            case REVERB:
+                effect = new Effect_Reverb();
+                break;
+            
+            case UNKNOWNEFFECT:
+                effect = new Effect_Unknown();
+                break;
+        }
+        memcpy(effect, m_effects[i], getEffectSize(type));
+        effects.push_back(effect);
+    }
+
+    return effects;
+}
+
+int EffectUpdateMessage::getMessageSize()
+{
+    return m_msg_sz;
 }
 

@@ -49,9 +49,6 @@ void EffectsModel::updateModel(EventInfo event)
 
     // Send updated effects profile to dsp
     updateDSP();
-
-    // Call redisplay?
-    // TODO - should this be here, or somewhere in main file that calls this
 }
 
 int EffectsModel::getTouchWidth()
@@ -70,10 +67,10 @@ void EffectsModel::updateDSP()
     EffectUpdateMessage message(m_profiles[m_curProfile]);
 
     // Get message as char[]
-    char msg[1024];
+    char msg[message.getMessageSize()];
     message.serialize(msg);
 
-    // Send message over IPC
+    // Send msg over IPC
     // TODO
 }
 

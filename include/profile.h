@@ -16,8 +16,9 @@ public:
     Profile();
     ~Profile();
     Profile(Json::Value config, HWState hw);
+    Profile(Profile const& copy);
     void update(HWState hw);
-    vector<Effect*> getEffectCopy();
+    vector<Effect*> getEffectCopy() const;
     vector<EffectType> getEffectTypes();
 
 private:
@@ -27,6 +28,7 @@ private:
     vector<Effect*> m_effects;
     map<ControlInfo, EffectInfo> m_mapping;
     float m_logic_level;    // logic level from HWState
+    Json::Value m_config;
 };
 
 #endif // PROFILE_H

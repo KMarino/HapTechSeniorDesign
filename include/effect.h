@@ -20,6 +20,7 @@ enum EffectType
 };
 
 int getEffectSize(EffectType type);
+EffectType getEffectType(string effectstr);
 
 // Virtual class for effects. Holds all of the parameters of the effect
 class Effect
@@ -146,7 +147,5 @@ public:
     void serialize(char* output);
     bool issame(const Effect* other); 
 };
-
-EffectType getEffectType(string effectstr);
 
 #endif // EFFECT_H

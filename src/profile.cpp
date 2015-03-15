@@ -10,6 +10,9 @@ Profile::Profile(Json::Value config, HWState hw)
 {
     // Get logic level from hw
     m_logic_level = hw.getLogicLevel();
+    
+    // Copy over config
+    m_config = config;
 
     // Parse the config
     int num_effects = config.get("num_effects", 1).asInt();
@@ -17,44 +20,46 @@ Profile::Profile(Json::Value config, HWState hw)
     for (int i = 0; i < num_effects; i++)
     {
         // Get info for the effect
-        string effectType = effect_types.get(i, "").asString();
+        string effectTypestr = effect_types.get(i, "").asString();
+        EffectType type = getEffectType(effectTypestr);
         Effect* effect;
         Json::Value effectConfig;
-        if (effectType.compare("delay") == 0)
+        switch(type)
         {
-            effectConfig = config["delay"];
-            effect = new Effect_Delay(effectConfig);
-            updateMapping(effectConfig, effect, "delay");
+            case DELAY:
+                effectConfig = config["delay"];
+                effect = new Effect_Delay(effectConfig);
+                updateMapping(effectConfig, effect, "delay");
+                break;
+            case DISTORTION:
+                effectConfig = config["distortion"];
+                effect = new Effect_Distortion(effectConfig);
+                updateMapping(effectConfig, effect, "distortion");
+                break;
+            case EQUALIZER:
+                effectConfig = config["equalizer"];
+                effect = new Effect_Equalizer(effectConfig);
+                updateMapping(effectConfig, effect, "equalizer");
+                break;
+            case LOWPASS:
+                effectConfig = config["lowpass"];
+                effect = new Effect_Lowpass(effectConfig);
+                updateMapping(effectConfig, effect, "lowpass");
+                break;
+            case REVERB:
+                effectConfig = config["reverb"];
+                effect = new Effect_Reverb(effectConfig);
+                updateMapping(effectConfig, effect, "reverb");
+                break;
+            case UNKNOWNEFFECT:
+            default:
+                // Didn't compare anything
+                throw std::runtime_error("Error in parsing - unknown effect type");
+                break;
         }
-        else if (effectType.compare("distortion") == 0)
-        {
-            effectConfig = config["distortion"];
-            effect = new Effect_Distortion(effectConfig);
-            updateMapping(effectConfig, effect, "distortion");
-        }
-        else if (effectType.compare("equalizer") == 0)
-        {
-            effectConfig = config["equalizer"];
-            effect = new Effect_Equalizer(effectConfig);
-            updateMapping(effectConfig, effect, "equalizer");
-        }
-        else if (effectType.compare("lowpass") == 0)
-        {
-            effectConfig = config["lowpass"];
-            effect = new Effect_Lowpass(effectConfig);
-            updateMapping(effectConfig, effect, "lowpass");
-        }
-        else if (effectType.compare("reverb") == 0)
-        {
-            effectConfig = config["reverb"];
-            effect = new Effect_Reverb(effectConfig);
-            updateMapping(effectConfig, effect, "reverb");
-        }
-        else
-        {
-            // Didn't compare anything
-            throw std::runtime_error("Error in parsing - unknown effect type");
-        }
+        
+        m_effect_types.push_back(type);
+        m_effects.push_back(effect);
     }
 }
 
@@ -64,6 +69,51 @@ Profile::~Profile()
     for (int i = 0; i < m_effects.size(); i++)
     {
         delete m_effects[i];
+    }
+}
+
+Profile::Profile(Profile const& copy)
+{
+    // Copy over attributes
+    m_effects = copy.getEffectCopy();
+    m_effect_types = copy.m_effect_types;
+    m_logic_level = copy.m_logic_level;
+    m_config = copy.m_config;
+
+    // Build mapping again
+    for (int i = 0; i < m_effects.size(); i++)
+    {
+        EffectType type = m_effect_types[i];
+        Effect* effect = m_effects[i];
+        Json::Value effectConfig;
+        switch(type)
+        {
+            case DELAY:
+                effectConfig = m_config["delay"];
+                updateMapping(effectConfig, effect, "delay");
+                break;
+            case DISTORTION:
+                effectConfig = m_config["distortion"];
+                updateMapping(effectConfig, effect, "distortion");
+                break;
+            case EQUALIZER:
+                effectConfig = m_config["equalizer"];
+                updateMapping(effectConfig, effect, "equalizer");
+                break;
+            case LOWPASS:
+                effectConfig = m_config["lowpass"];
+                updateMapping(effectConfig, effect, "lowpass");
+                break;
+            case REVERB:
+                effectConfig = m_config["reverb"];
+                updateMapping(effectConfig, effect, "reverb");
+                break;
+            case UNKNOWNEFFECT:
+            default:
+                // Didn't compare anything
+                throw std::runtime_error("Error in parsing - unknown effect type");
+                break;
+        }
     }
 }
 
@@ -100,10 +150,9 @@ void Profile::update(HWState hw)
         }
         else if (scaletype == LOG)
         {
-            
             // Scale pot value linearly between min and max
             attr_value = log((control_value/logic_level) * (logic_level - (1/exp(2)))) + 2; // Value that scales log between 0 and 2
-            attr_value = min + 0.5*attr_value*(min-max);    // Now scales between min and max
+            attr_value = min + 0.5*attr_value*(max-min);    // Now scales between min and max
         }
         else
         {
@@ -134,8 +183,9 @@ void Profile::update(HWState hw)
         // Convert to attribute value and call effect's update
         if (scaletype == SWITCHSCALE)
         {
+            // TODO - Maybe this is incorrect. Is it a digital or analog pin?
             // If less than 1/2 logic level, it's 0. Otherwise 1.
-            if (control_value < 0.5 * logic_level)
+            if (control_value < 0.5)// * logic_level)
             {
                 attr_value = 0.0;
             }
@@ -203,7 +253,7 @@ void Profile::update(HWState hw)
     }
 }
 
-vector<Effect*> Profile::getEffectCopy()
+vector<Effect*> Profile::getEffectCopy() const
 {
     // Get values from profile
     vector<Effect*> effects;
@@ -293,7 +343,7 @@ void Profile::updateMapping(Json::Value config, Effect* effect, string effectstr
                 Json::Value mid_gainConfig = config["mid_gain"];
                 updateMappingAttr(mid_gainConfig, effect, "mid_gain");
                 Json::Value treb_gainConfig = config["treb_gain"];
-                updateMappingAttr(treb_gainConfig, effect, "midhigh");
+                updateMappingAttr(treb_gainConfig, effect, "treb_gain");
                 Json::Value onConfig = config["on"];
                 updateMappingAttr(onConfig, effect, "on");
             }

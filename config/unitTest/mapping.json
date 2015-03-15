@@ -117,7 +117,7 @@
                 "default": 0,
                 "control": "linear",
                 "hwtype": "pot",
-                "hwidx": 1,
+                "hwidx": 4,
                 "min": 0,
                 "max": 6
             },
@@ -184,7 +184,7 @@
                 "default": 0,
                 "control": "switch",
                 "hwtype": "switch",
-                "hwidx": 0
+                "hwidx": 1
             }
         }
     },

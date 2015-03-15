@@ -488,10 +488,6 @@ EffectType getEffectType(string effectstr)
     {
         return EQUALIZER;
     }
-    else if (effectstr.compare("equalizer") == 0)
-    {
-        return EQUALIZER;
-    }
     else if (effectstr.compare("lowpass") == 0)
     {
         return LOWPASS;

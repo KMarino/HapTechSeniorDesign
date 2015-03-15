@@ -16,10 +16,12 @@ public:
     EffectUpdateMessage(Profile profile); 
     EffectUpdateMessage(char* msg);
     ~EffectUpdateMessage();
+    EffectUpdateMessage(EffectUpdateMessage const& copy);
     void serialize(char* output);
     bool issame(const EffectUpdateMessage& other);
     vector<EffectType> getEffectTypes();
-    vector<Effect*> getEffects();
+    vector<Effect*> getEffectCopy() const;
+    int getMessageSize();
 
 private:
     vector<EffectType> m_effect_types;
