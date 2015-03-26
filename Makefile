@@ -3,6 +3,8 @@ CXX =g++
 
 PLATFORM =linux-gcc
 
+AQUILASRC = git://github.com/zsiciarz/aquila
+
 # Directories
 SRCDIR = src
 BINDIR = bin
@@ -16,10 +18,10 @@ CFLAGS += -O3 -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
 LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU -lpthread \
 	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
-	$(EXTDIR)/aquila/lib/libAquila.a
+	$(EXTDIR)/aquila/libAquila.a
 
 #Includes
-INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila/include/aquila
+INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila/aquila
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
@@ -85,6 +87,9 @@ $(BINDIR)/unittesting.o: $(SRCDIR)/unittesting.cpp $(INCDIR)/effect.h $(INCDIR)/
 clean:
 	rm -rf ${BINDIR}/*
 
+get-deps:
+	git clone $(AQUILASRC) extern/aquila
+	cmake $(EXTDIR)/aquila/CMakeLists.txt
 
 deps:
 	# gtest
@@ -92,4 +97,4 @@ deps:
 	# jsoncpp
 	scons -C $(EXTDIR)/jsoncpp-src-0.5.0 platform=$(PLATFORM) check
 	#aquila
-	$(MAKE) -C $(EXTDIR)/aquila-src all install
+	$(MAKE) -C $(EXTDIR)/aquila
