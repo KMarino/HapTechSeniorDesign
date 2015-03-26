@@ -4,21 +4,12 @@
 
         sudo apt-get install build-essential scons cmake freeglut3-dev libsfml-dev
 
-#### Auquila
-
-Aquila must be built with `cmake`, which doesn't play nice with `make`
-
-        cd extern
-        git clone https://github.com/zsiciarz/aquila
-        cd aquila
-        cmake CMakeLists.txt
-        make
-        cd ../..
 
 #### Build Included dependencies
 
-This will build gtest and jsoncpp
+This will build gtest, aquila, and jsoncpp
 
+        make get-deps
         make deps
 
 ### Build
