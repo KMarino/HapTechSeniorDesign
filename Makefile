@@ -3,6 +3,8 @@ CXX =g++
 
 PLATFORM =linux-gcc
 
+AQUILASRC = git://github.com/zsiciarz/aquila
+
 # Directories
 SRCDIR = src
 BINDIR = bin
@@ -85,9 +87,14 @@ $(BINDIR)/unittesting.o: $(SRCDIR)/unittesting.cpp $(INCDIR)/effect.h $(INCDIR)/
 clean:
 	rm -rf ${BINDIR}/*
 
+get-deps:
+	git clone $(AQUILASRC) extern/aquila
+	cmake $(EXTDIR)/aquila/CMakeLists.txt
 
 deps:
 	# gtest
 	$(MAKE) -C $(EXTDIR)/gtest-1.7.0/make gtest.a
 	# jsoncpp
 	scons -C $(EXTDIR)/jsoncpp-src-0.5.0 platform=$(PLATFORM) check
+	#aquila
+	$(MAKE) -C $(EXTDIR)/aquila
