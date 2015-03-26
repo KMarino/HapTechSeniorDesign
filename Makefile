@@ -28,7 +28,7 @@ INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
 
 all:   test ui dsp
-main:  $(BINDIR)/effects_model_ui
+ui:    $(BINDIR)/effects_model_ui
 dsp:   $(BINDIR)/dsp 
 test:  $(BINDIR)/unit_test 
 
