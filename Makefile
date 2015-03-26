@@ -27,7 +27,10 @@ INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
 
-all: $(BINDIR)/effects_model_ui $(BINDIR)/dsp $(BINDIR)/unit_test 
+all:   test ui dsp
+main:  $(BINDIR)/effects_model_ui
+dsp:   $(BINDIR)/dsp 
+test:  $(BINDIR)/unit_test 
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}

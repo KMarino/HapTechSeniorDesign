@@ -23,3 +23,15 @@ remove and disable crap http://www.geekdroppings.com/tag/beaglebone-black/
         apt-get remove apache2
 
         apt-get autoremove
+
+(maybe do a reboot after just to be save)
+
+Aquila requires `sfml` version 2, but the repos only provide 1.6. Also `c++11` needs `gcc` 4.7+. So before installing, go ahead and add
+
+        deb http://ftp.de.debian.org/debian sid main
+        
+to `/etc/apt/sources.list` and `apt-get update`
+
+and then reinstall gcc
+
+        apt-get install gcc g++ make cmake
