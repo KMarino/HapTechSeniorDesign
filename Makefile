@@ -18,10 +18,12 @@ LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
 	$(EXTDIR)/aquila/libAquila.a \
 	$(EXTDIR)/aquila/lib/libOoura_fft.a \
+	-lsfml-audio \
+	-lsfml-system \
 	-lpthread
 
 #Includes
-INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila/include/aquila
+INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila-src/aquila
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
