@@ -1,0 +1,25 @@
+#!/bin/bash
+#compile dts files
+set -e
+
+
+for file in /GPIO/dts/*.dts
+	do
+		cp $file /lib/firmware/
+		file="${file##/GPIO/dts/}"
+		dtc -O dtb -o /lib/firmware/"${file%%.dts}".dtbo -b 0 -@ /lib/firmware/$file
+		grep -q -F "${file%%.dts}" /sys/devices/bone_capemgr.?/slots || echo "${file%%.dts}" >> /sys/devices/bone_capemgr.?/slots
+	done
+
+grep -q -F "cape-bone-iio" /sys/devices/bone_capemgr.?/slots || echo cape-bone-iio > /sys/devices/bone_capemgr.?/slots
+
+
+	if ! [ -e "/sys/class/gpio/gpio66" ]; then
+	 	echo 66 > /sys/class/gpio/export
+	fi
+	if ! [ -e "/sys/class/gpio/gpio67" ]; then
+	 	echo 67 > /sys/class/gpio/export
+	fi
+	if ! [ -e "/sys/class/gpio/gpio69" ]; then
+		echo 69 > /sys/class/gpio/export
+	fi
