@@ -576,7 +576,7 @@ TEST(Profile, testProfileUpdate)
     EXPECT_EQ(types2[1], DELAY);
     Effect_Lowpass lowpass = *((Effect_Lowpass*) effects2[0]);
     Effect_Delay delay = *((Effect_Delay*) effects2[1]);
-    EXPECT_LT(abs(lowpass.m_cutoff - (60 + 0.5*(log((1.0/5.0) * (5.0 - (1/exp(2)))) + 2)*(11940))), 1e-6);
+    EXPECT_LT(abs(lowpass.m_cutoff - (60 + 0.5*(log((1.0/5.0) * (5.0 - (1/exp(2)))) + 2)*(11940))), 1e-3);
     EXPECT_EQ(lowpass.m_resonance, 6);
     EXPECT_EQ(lowpass.m_on, 0);
     EXPECT_EQ(delay.m_amount, 4);
