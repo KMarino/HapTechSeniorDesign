@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <cmath>
 #include "gtest/gtest.h"
 #include "optparser.h"
 #include "effect.h"
