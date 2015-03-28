@@ -1,0 +1,6 @@
+#!/bin/bash
+#ssh shit from host to BBB and tell BBB to run make file
+
+
+scp -r ~/HapTechSeniorDesign/GPIO root@192.168.7.2:/
+ssh root@192.168.7.2 "cd /GPIO; make main"
