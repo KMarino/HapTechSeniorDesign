@@ -13,11 +13,12 @@ EXTDIR = extern
 CFLAGS += -O3 -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
 
 #Libraries
-LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU -lpthread \
+LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
 	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
 	$(EXTDIR)/aquila/libAquila.a \
-	$(EXTDIR)/aquila/lib/libOoura_fft.a
+	$(EXTDIR)/aquila/lib/libOoura_fft.a \
+	-lpthread
 
 #Includes
 INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila/include/aquila
