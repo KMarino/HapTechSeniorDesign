@@ -8,7 +8,7 @@
 
 class ipcCliSock{
 public:
-	bool sockInit();
+	ipcCliSock();
 	bool sockSend(char*);
 	bool sockClose();
 private:

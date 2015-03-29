@@ -8,7 +8,7 @@
 
 class ipcSerSock{
 public:
-	bool sockInit();
+	ipcSerSock();
 	char* sockRecv();
 	bool sockClose();
 private:

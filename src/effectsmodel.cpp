@@ -1,4 +1,5 @@
 #include "effectsmodel.h"
+#include "sockClient.h"
 
 EffectsModel::EffectsModel()	
 {
@@ -67,11 +68,15 @@ void EffectsModel::updateDSP()
     EffectUpdateMessage message(m_profiles[m_curProfile]);
 
     // Get message as char[]
-    char msg[message.getMessageSize()];
+    int msgSize = message.getMessageSize();
+    char msg[msgSize];
     message.serialize(msg);
 
     // Send msg over IPC
     // TODO
+    
+
+	
 }
 
 bool EffectsModel::updateSwitchDials()
