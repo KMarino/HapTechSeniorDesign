@@ -7,9 +7,11 @@
 #### Aquila
 
 First clone Aqulia to extern
-cd extern/
-git clone git://github.com/zsiciarz/aquila.git aquila-src
-cd ..
+
+	cd extern/
+	git clone git://github.com/zsiciarz/aquila.git aquila-src
+	cd ..
+
 Make a build directory for Aquila
 Aquila must be built with `cmake`, which doesn't play nice with `make`
 
