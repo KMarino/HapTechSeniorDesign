@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <pthread.h>
 
 class ipcSerSock{
 public:
@@ -20,6 +21,7 @@ private:
 	struct sockaddr_un client_addr;
 	char server_filename[1024];
 	char client_filename[1024];
+	pthread_cond_t exitCond;
 };
 
 #endif //SOCK_SERV_H

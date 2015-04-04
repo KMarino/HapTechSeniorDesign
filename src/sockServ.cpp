@@ -1,6 +1,7 @@
 #include "sockServ.h"
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #define BYTESTORECV 1024
 
@@ -25,13 +26,23 @@ ipcSerSock::ipcSerSock(){
 }
 
 char* ipcSerSock::sockRecv(){
-     char dataPtr[BYTESTORECV];
+     char* dataPtr = new char[BYTESTORECV]; //need to delete after receipt
      /*if (recv(s, dataPtr, sizeof(*dataPtr), 0) < 0){
           return false;
      }*/
-     read(s, dataPtr, (size_t)BYTESTORECV);
-     printf("%c", dataPtr[0]);
-     return dataPtr;
+     //pthread_t thread1, thread2;
+     //pthread_mutex_t exitMutex;
+     //pthread_mutex_init(&exitMutex,0);
+     //dataPtr = (char*) pthread_create(&thread1, NULL, ipcSerSock::ptRecv, (void*)dataPtr);
+     //pthread_cond_wait(&exitCond, &exitMutex);
+     return dataPtr; 
+}
+
+void* ipcSerSock::ptRecv(void* dataPtr){
+    read(s, (char*)dataPtr, (size_t)BYTESTORECV);
+    printf("%c", (char*)dataPtr[0]);
+    //pthread_cond_signal(&exitCond);
+    return NULL;
 }
 
 ipcSerSock::~ipcSerSock(){
