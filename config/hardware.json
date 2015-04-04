@@ -20,5 +20,5 @@
     "touch_size": [480, 272],
   
     // Logic voltage level
-    "logic_level": 5.0
+    "logic_level": 1.8
 }

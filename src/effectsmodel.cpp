@@ -3,7 +3,6 @@
 
 EffectsModel::EffectsModel()	
 {
-    cliSock = new ipcCliSock();
 }
 
 EffectsModel::EffectsModel(const char* hwConfigFile, const char* mappingConfigFile)
@@ -75,7 +74,7 @@ void EffectsModel::updateDSP()
 
     // Send msg over IPC
     // TODO
-    cliSock->sockSend(msg, msgSize);
+    cliSock.sockSend(msg, msgSize);
 
 	
 }
@@ -89,9 +88,19 @@ bool EffectsModel::updateSwitchDials()
         int pin = m_hw.getPinNumber(POTENTIOMETER, idx);
         float value = 0;
 
-        // TODO - Get voltage value on pin       
+		if (!HW_SIM)
+		{
+			// Read voltage from hardware
+			value = readAI(pin); 
+		}
+		else
+		{
+			// Dummy valu
+			value = 1;
+		}    
 
-        //m_hw.setValue(POTENTIOMETER, idx, value);
+		// Set value for update
+        m_hw.setValue(POTENTIOMETER, idx, value);
     }
 
     // Update switch values
@@ -101,9 +110,19 @@ bool EffectsModel::updateSwitchDials()
         int pin = m_hw.getPinNumber(SWITCH, idx);
         float value = 0;
 
-        // TODO - Get voltage value on pin     
+		if (!HW_SIM)
+		{
+			// Read logic level from hardware
+			value = (float) readGPIO(pin);
+		}
+		else
+		{
+			// Dummy valu
+			value = 1;
+		}
 
-        //m_hw.setValue(SWITCH, idx, value);
+		// Set value for update
+		m_hw.setValue(SWITCH, idx, value);
     }
 }
 
@@ -122,8 +141,4 @@ bool EffectsModel::updateKeyProfile(EventInfo event)
 
     // Update current index
     m_curProfile = profileIndex;
-} 
-
-EffectsModel::~EffectsModel(){
-    delete cliSock;
 }
