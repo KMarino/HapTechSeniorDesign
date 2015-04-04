@@ -1,13 +1,15 @@
 #include "sockServ.h"
+#include <string.h>
+#include <unistd.h>
 
 #define BYTESTORECV 1024
 
 ipcSerSock::ipcSerSock(){
-    server_filename = "/tmp/socket-server";
-    client_filename = "/tmp/socket-client";
+    strncpy(server_filename,"/tmp/socket-server", sizeof("/tmp/socket-server"));
+    strncpy(client_filename,"/tmp/socket-client", sizeof("/tmp/socket-client"));
 
-    strncpy(client_addr.sun_path, client_filename, strlen(client_filename));
-    client_addr.sun_family = AF_UNIX;
+    strncpy(server_addr.sun_path, server_filename, strlen(server_filename));
+    server_addr.sun_family = AF_UNIX;
 
     if ((s = socket(AF_UNIX, SOCK_DGRAM, 0)) < 0){
         perror("Server Socket");
@@ -27,13 +29,12 @@ char* ipcSerSock::sockRecv(){
      /*if (recv(s, dataPtr, sizeof(*dataPtr), 0) < 0){
           return false;
      }*/
-     if(read(s, dataPtr, (size_t)BYTESTORECV) < 0){
-        return false;
-     }
+     read(s, dataPtr, (size_t)BYTESTORECV);
+     printf("%c", dataPtr[0]);
      return dataPtr;
 }
 
 ipcSerSock::~ipcSerSock(){
      close(s);
-     delete server_addr, client_addr;
+     delete &server_addr, &client_addr;
 }

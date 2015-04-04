@@ -29,7 +29,7 @@ INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/
 .SUFFIXES: .o .h .c .hpp .cpp
 
 # Object files
-OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
+OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o $(BINDIR)/sockClient.o $(BINDIR)/sockServ.o
 
 all:   test ui dsp
 ui:    $(BINDIR)/effects_model_ui
@@ -77,6 +77,14 @@ $(BINDIR)/hwstate.o: $(SRCDIR)/hwstate.cpp $(INCDIR)/hwstate.h
 $(BINDIR)/effect.o: $(SRCDIR)/effect.cpp $(INCDIR)/effect.h
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effect.o $(SRCDIR)/effect.cpp ${INCS}
+
+$(BINDIR)/sockClient.o: $(SRCDIR)/sockClient.cpp $(INCDIR)/sockClient.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/sockClient.o $(SRCDIR)/sockClient.cpp ${INCS}
+	
+$(BINDIR)/sockServ.o: $(SRCDIR)/sockServ.cpp $(INCDIR)/sockServ.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/sockServ.o $(SRCDIR)/sockServ.cpp ${INCS}
 
 $(BINDIR)/effectupdatemessage.o: $(SRCDIR)/effectupdatemessage.cpp $(INCDIR)/effectupdatemessage.h
 	@echo $<

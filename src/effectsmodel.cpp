@@ -75,7 +75,7 @@ void EffectsModel::updateDSP()
 
     // Send msg over IPC
     // TODO
-    cliSock.sockSend(msg, msgSize);
+    cliSock->sockSend(msg, msgSize);
 
 	
 }

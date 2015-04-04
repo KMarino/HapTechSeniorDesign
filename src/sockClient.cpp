@@ -1,11 +1,13 @@
 #include "sockClient.h"
+#include <string.h>
+#include <unistd.h>
 
 ipcCliSock::ipcCliSock(){
-    server_filename = "/tmp/socket-server";
-    client_filename = "/tmp/socket-client";
+    strncpy(server_filename,"/tmp/socket-server", sizeof("/tmp/socket-server"));
+    strncpy(client_filename,"/tmp/socket-client", sizeof("/tmp/socket-client"));
 
-    strncpy(server_addr.sun_path, server_filename, strlen(server_filename));
-    server_addr.sun_family = AF_UNIX;
+    strncpy(client_addr.sun_path, client_filename, strlen(client_filename));
+    client_addr.sun_family = AF_UNIX;
 
     if ((s = socket(AF_UNIX, SOCK_DGRAM, 0)) < 0){
         perror("Client Socket");
@@ -30,7 +32,7 @@ bool ipcCliSock::sockSend(char* dataPtr, int size){
     return true;
 }
 
-bool ipcCliSock::~ipcCliSock(){
+ipcCliSock::~ipcCliSock(){
      close(s);
-     delete server_addr, client_addr;
+     delete &server_addr, &client_addr;
 }

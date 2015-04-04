@@ -8,6 +8,8 @@
 #include "hwstate.h"
 #include "eventinfo.h"
 #include "effectsmodel.h" 
+#include "sockClient.h" 
+#include "sockServ.h"
 
 using namespace std;
 
@@ -725,19 +727,19 @@ TEST(EffectsModel, checkTouchSize)
 TEST(IPCSocket, sendReceive)
 {
     //create
-    cliSock = new ipcCliSock();
-    serSock = new ipcSerSock();
+    ipcCliSock* cliSock = new ipcCliSock();
+    ipcSerSock* serSock = new ipcSerSock();
 
-    char[4] message = "ohai";
+    char message[] = "ohai";
 
-    bool ok = cliSock.sockSend(message, sizeof(message));
-    char * response = serSock.sockRecv();
+    bool ok = cliSock->sockSend(message, sizeof(message));
+    char * response = serSock->sockRecv();
 
     EXPECT_EQ(ok, true);
-    EXPECT_EQ("o", response[0]);
-    EXPECT_EQ("h", response[1]);
-    EXPECT_EQ("a", response[2]);
-    EXPECT_EQ("i", response[3]);
+    EXPECT_EQ('o', response[0]);
+    EXPECT_EQ('h', response[1]);
+    EXPECT_EQ('a', response[2]);
+    EXPECT_EQ('i', response[3]);
 
     delete cliSock;
     delete serSock;

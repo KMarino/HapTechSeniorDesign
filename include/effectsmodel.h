@@ -28,7 +28,7 @@ private:
     bool updateMouse(EventInfo event);
     bool updateKeyProfile(EventInfo event);
     
-    ipcCliSock cliSock;    
+    ipcCliSock* cliSock;    
     HWState m_hw;
     vector<Profile> m_profiles;
     int m_curProfile;

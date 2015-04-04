@@ -1,3 +1,6 @@
+#ifndef SOCK_CLIENT_H
+#define SOCK_CLIENT_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -15,6 +18,8 @@ private:
 	int s, t, len;
 	struct sockaddr_un server_addr;
 	struct sockaddr_un client_addr;
-	char * server_filename;
-	char * client_filename;
+	char server_filename[1024];
+	char client_filename[1024];
 };
+
+#endif // SOCK_CLIENT_H
