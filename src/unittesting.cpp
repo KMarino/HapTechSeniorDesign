@@ -722,6 +722,26 @@ TEST(EffectsModel, checkTouchSize)
     EXPECT_EQ(width, 480);
     EXPECT_EQ(height, 560);
 }
+TEST(IPCSocket, sendReceive)
+{
+    //create
+    cliSock = new ipcCliSock();
+    serSock = new ipcSerSock();
+
+    char[4] message = "ohai";
+
+    bool ok = cliSock.sockSend(message, sizeof(message));
+    char * response = serSock.sockRecv();
+
+    EXPECT_EQ(ok, true);
+    EXPECT_EQ("o", response[0]);
+    EXPECT_EQ("h", response[1]);
+    EXPECT_EQ("a", response[2]);
+    EXPECT_EQ("i", response[3]);
+
+    delete cliSock;
+    delete serSock;
+}
 
 int main(int argc, char** argv)
 {
