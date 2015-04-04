@@ -9,8 +9,8 @@
 class ipcCliSock{
 public:
 	ipcCliSock();
-	bool sockSend(char*);
-	bool sockClose();
+	bool sockSend(char*, int);
+	~ipcCliSock();
 private:
 	int s, t, len;
 	struct sockaddr_un server_addr;

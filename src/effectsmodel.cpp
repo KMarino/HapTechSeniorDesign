@@ -3,6 +3,7 @@
 
 EffectsModel::EffectsModel()	
 {
+    cliSock = new ipcCliSock();
 }
 
 EffectsModel::EffectsModel(const char* hwConfigFile, const char* mappingConfigFile)
@@ -74,7 +75,7 @@ void EffectsModel::updateDSP()
 
     // Send msg over IPC
     // TODO
-    
+    cliSock.sockSend(msg, msgSize);
 
 	
 }
@@ -122,3 +123,7 @@ bool EffectsModel::updateKeyProfile(EventInfo event)
     // Update current index
     m_curProfile = profileIndex;
 } 
+
+EffectsModel::~EffectsModel(){
+    delete cliSock;
+}

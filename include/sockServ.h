@@ -10,7 +10,7 @@ class ipcSerSock{
 public:
 	ipcSerSock();
 	char* sockRecv();
-	bool sockClose();
+	~ipcSerSock();
 private:
 	int s, t, len;
 	struct sockaddr_un server_addr;

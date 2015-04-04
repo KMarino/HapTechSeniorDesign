@@ -1,5 +1,7 @@
 #include "sockServ.h"
 
+#define BYTESTORECV 1024
+
 ipcSerSock::ipcSerSock(){
     server_filename = "/tmp/socket-server";
     client_filename = "/tmp/socket-client";
@@ -21,17 +23,17 @@ ipcSerSock::ipcSerSock(){
 }
 
 char* ipcSerSock::sockRecv(){
-     char dataPtr[1024];
+     char dataPtr[BYTESTORECV];
      /*if (recv(s, dataPtr, sizeof(*dataPtr), 0) < 0){
           return false;
      }*/
-     if(read(s, dataPtr, sizeof(dataPtr)) < 0){
+     if(read(s, dataPtr, (size_t)BYTESTORECV) < 0){
         return false;
      }
      return dataPtr;
 }
 
-bool ipcSerSock::sockClose(){
+ipcSerSock::~ipcSerSock(){
      close(s);
-     return true;
+     delete server_addr, client_addr;
 }

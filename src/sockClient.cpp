@@ -20,17 +20,17 @@ ipcCliSock::ipcCliSock(){
     }*/
 }
 
-bool ipcCliSock::sockSend(char* dataPtr){
+bool ipcCliSock::sockSend(char* dataPtr, int size){
      /*if (send(s, dataPtr, strlen(*dataPtr), 0) < 0){
           return false;
      }*/
-     if(sendto(s, dataPtr, sizeof(dataPtr), 0, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0){
+     if(sendto(s, dataPtr, (size_t)size, 0, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0){
         return false;
     }
     return true;
 }
 
-bool ipcCliSock::sockClose(){
+bool ipcCliSock::~ipcCliSock(){
      close(s);
-     return true;
+     delete server_addr, client_addr;
 }
