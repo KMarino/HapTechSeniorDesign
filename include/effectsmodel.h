@@ -7,6 +7,9 @@
 #include "profile.h"
 #include "effectupdatemessage.h"
 #include <sstream>
+#include "sockClient.h"
+#include "gpio.h"
+#include "global.h"
 
 using namespace std;
 
@@ -25,8 +28,9 @@ private:
     void updateDSP();
     bool updateSwitchDials();
     bool updateMouse(EventInfo event);
-    bool updateKeyProfile(EventInfo event);    
-
+    bool updateKeyProfile(EventInfo event);
+    
+    ipcCliSock cliSock;    
     HWState m_hw;
     vector<Profile> m_profiles;
     int m_curProfile;
