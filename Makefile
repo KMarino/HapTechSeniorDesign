@@ -31,9 +31,10 @@ INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o $(BINDIR)/sockClient.o $(BINDIR)/sockServ.o $(BINDIR)/gpio.o
 
-all:   ui dsp test
+all:   ui dsp key test
 ui:    $(BINDIR)/effects_model_ui
-dsp:   $(BINDIR)/dsp 
+dsp:   $(BINDIR)/dsp
+key:   $(BINDIR)/key_test
 test:  $(BINDIR)/unit_test 
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
@@ -41,6 +42,9 @@ $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 
 $(BINDIR)/dsp: $(BINDIR)/dsp.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/dsp $(BINDIR)/dsp.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/key_test: $(BINDIR)/key_test.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/key_test $(BINDIR)/key_test.o $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
 	$(CXX) $(CFLAGS) -o $(BINDIR)/unit_test $(BINDIR)/unittesting.o $(OBJS) $(LIBS) ${INCS}
@@ -53,6 +57,10 @@ $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp
 $(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp 
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp.o $(SRCDIR)/dsp.cpp ${INCS}
+
+$(BINDIR)/key_test.o: $(SRCDIR)/dsp.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/key_test.o $(SRCDIR)/dsp.cpp ${INCS}
 
 $(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
 	@echo $<

@@ -6,11 +6,13 @@
 
 ipcSerSock::ipcSerSock(){
     strncpy(server_filename,"/tmp/socket-server", sizeof("/tmp/socket-server"));
-    strncpy(client_filename,"/tmp/socket-client", sizeof("/tmp/socket-client"));
+    //strncpy(client_filename,"/tmp/socket-client", sizeof("/tmp/socket-client"));
 
-    strncpy(server_addr.sun_path, server_filename, strlen(server_filename));
+    memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sun_family = AF_UNIX;
-
+    strncpy(server_addr.sun_path, server_filename, strlen(server_filename));
+    unlink(server_addr.sun_path);
+    
     if ((s = socket(AF_UNIX, SOCK_DGRAM, 0)) < 0){
         perror("Server Socket");
     }
@@ -35,6 +37,7 @@ char* ipcSerSock::sockRecv(){
      //dataPtr = (char*) pthread_create(&thread1, NULL, ipcSerSock::ptRecv, (void*)dataPtr);
      //pthread_cond_wait(&exitCond, &exitMutex);
      read(s, (char*)dataPtr, (size_t)BYTESTORECV);
+     //printf("%c", (char*)dataPtr[0]);
      return dataPtr; 
 }
 
@@ -47,5 +50,5 @@ char* ipcSerSock::sockRecv(){
 
 ipcSerSock::~ipcSerSock(){
      close(s);
-     delete &server_addr, &client_addr;
+     //delete &server_addr, &client_addr;
 }
