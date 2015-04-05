@@ -43,7 +43,7 @@ HWState::HWState(const char* configfile)
     for (int i = 0; i < m_num_push; i++)
     {
         int push_pin = pushpins.get(i, 0).asInt();
-        char key = keys.get(i, "?").asString().at(0);
+        char key = keys.get(i, "?").asInt();
         m_devices.push_back(Control_Push(push_pin, key));
         m_device_types.push_back(PUSHBUTTON);
         m_push_chars[key] = i;

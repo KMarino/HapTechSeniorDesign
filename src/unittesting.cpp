@@ -336,16 +336,16 @@ TEST(hwstate, testConfigParse)
     EXPECT_EQ(hwstate.getValue(SWITCH, 2), 0);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 0), 8);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 0), 0);
-    EXPECT_EQ(hwstate.getButtonIndex('a'), 0);
+    EXPECT_EQ(hwstate.getButtonIndex(10), 0);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 1), 9);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 1), 0);
-    EXPECT_EQ(hwstate.getButtonIndex('s'), 1);
+    EXPECT_EQ(hwstate.getButtonIndex(11), 1);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 2), 10);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 2), 0);
-    EXPECT_EQ(hwstate.getButtonIndex('d'), 2);
+    EXPECT_EQ(hwstate.getButtonIndex(12), 2);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 3), 11);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 3), 0);    
-    EXPECT_EQ(hwstate.getButtonIndex('f'), 3);
+    EXPECT_EQ(hwstate.getButtonIndex(13), 3);
     EXPECT_EQ(hwstate.getLogicLevel(), 5.0);
 }
 
