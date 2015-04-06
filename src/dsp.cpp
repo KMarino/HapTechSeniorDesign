@@ -126,19 +126,21 @@ int main()
 	std::thread listener (recorder);
 	std::thread player (play);
 	std::thread endControl (closeProgram);
-	while(CONT_LISTEN)
+	
+	ipcSerSock* serSock = new ipcSerSock(); //this is the constructor
+    char gimmeData[1024];
+    char msgSizeC[sizeof(int)];
+    while(CONT_LISTEN)
 	{
 		//blocking recieve here
-		ipcSerSock* serSock = new ipcSerSock(); //this is the constructor
-	    char gimmeData[1024];
-        char msgSizeC[sizeof(int)];
         char* recvStrm = serSock->sockRecv();
         strncpy(msgSizeC, recvStrm, sizeof(int));
         int msgSize = atoi(msgSizeC);
 	    strncpy(recvStrm, gimmeData, msgSize); //this is where Kenny's stuff will send to
         EffectUpdateMessage profile(gimmeData);
-	    delete recvStrm, serSock; //destructor
 	}
+	delete recvStrm, serSock; //destructor
+	
 	listener.join();
 	player.join();
 	endControl.join();
