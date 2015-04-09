@@ -5,6 +5,6 @@
 #define SYSFS_AI_DIR "/sys/devices/ocp.3/helper.18" 
 
 int readGPIO(int pin);
-float readAI(int pin);	
+float readAI(int pin);
 
 #endif

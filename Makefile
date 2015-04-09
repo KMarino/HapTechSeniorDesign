@@ -31,10 +31,11 @@ INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o $(BINDIR)/sockClient.o $(BINDIR)/sockServ.o $(BINDIR)/gpio.o
 
-all:   ui dsp key test
+all:   ui dsp key hwc test
 ui:    $(BINDIR)/effects_model_ui
 dsp:   $(BINDIR)/dsp
 key:   $(BINDIR)/key_test
+hwc:   $(BINDIR)/hw_control_test
 test:  $(BINDIR)/unit_test 
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
@@ -45,6 +46,9 @@ $(BINDIR)/dsp: $(BINDIR)/dsp.o $(OBJS)
 
 $(BINDIR)/key_test: $(BINDIR)/key_test.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/key_test $(BINDIR)/key_test.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/hw_control_test: $(BINDIR)/HardwareControlTest.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/hw_control_test $(BINDIR)/HardwareControlTest.o $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
 	$(CXX) $(CFLAGS) -o $(BINDIR)/unit_test $(BINDIR)/unittesting.o $(OBJS) $(LIBS) ${INCS}
@@ -58,9 +62,13 @@ $(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp.o $(SRCDIR)/dsp.cpp ${INCS}
 
-$(BINDIR)/key_test.o: $(SRCDIR)/dsp.cpp 
+$(BINDIR)/key_test.o: $(SRCDIR)/key_test.cpp 
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/key_test.o $(SRCDIR)/dsp.cpp ${INCS}
+
+$(BINDIR)/HardwareControlTest.o: $(SRCDIR)/HardwareControlTest.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/HardwareControlTest.o $(SRCDIR)/HardwareControlTest.cpp ${INCS}
 
 $(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
 	@echo $<
