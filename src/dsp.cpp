@@ -23,6 +23,8 @@ bool firstTime = true;//first buffer edge case handler
 
 unsigned int channels;
 unsigned int sampleRate;
+vector<EffectType> effects;//recieved from effectsmodelcode
+//sf::SoundBuffer oldBuffer might be necessary for edge case in delay
 
 class inputAudioStream : public sf::SoundStream
 {
@@ -38,8 +40,13 @@ public:
 private:
 	std::vector<sf::Int16> samples;
 	std::size_t currentSample;
+	void applyDSP(std::vector<sf::Int16> *samples)
+	{
+		return;
+	}
 	virtual bool onGetData(Chunk& data)
 	{
+		
 		const int samplesToStream = 4410; 
 		//arbritary number tweak for preformance
 		//samples/SampleRate = time
@@ -48,9 +55,11 @@ private:
 			auto sample_start = buffers[playerBufferState].getSamples();
 			auto sample_Count = buffers[playerBufferState].getSampleCount();
 			auto sample_end = buffers[playerBufferState].getSamples() + sample_Count;
+			
 			samples.assign(sample_start, sample_end);
 			currentSample = 0;
 		}
+		applyDSP(&samples);
 		data.samples = &samples[currentSample];
 		if(currentSample + samplesToStream <= samples.size())
 		{
@@ -68,7 +77,7 @@ private:
 	virtual void onSeek(sf::Time timeOffset)
 	{
 		//required virtual func, we're not using it
-		int dummy = 0;
+//		int dummy = 0;
 		return;
 	}
 	
@@ -128,16 +137,19 @@ int main()
 	std::thread endControl (closeProgram);
 	
 	ipcSerSock* serSock = new ipcSerSock(); //this is the constructor
-    char gimmeData[1024];
-    char msgSizeC[sizeof(int)];
-    while(CONT_LISTEN)
+	char gimmeData[1024];
+	char msgSizeC[sizeof(int)];
+	char *recvStrm;
+        while(CONT_LISTEN)
 	{
-		//blocking recieve here
-        char* recvStrm = serSock->sockRecv();
-        strncpy(msgSizeC, recvStrm, sizeof(int));
-        int msgSize = atoi(msgSizeC);
-	    strncpy(recvStrm, gimmeData, msgSize); //this is where Kenny's stuff will send to
-        EffectUpdateMessage profile(gimmeData);
+	//blocking recieve here
+        	recvStrm = serSock->sockRecv();
+        	strncpy(msgSizeC, recvStrm, sizeof(int));
+       		int msgSize = atoi(msgSizeC);
+	        strncpy(recvStrm, gimmeData, msgSize); //this is where Kenny's stuff will send to
+        	EffectUpdateMessage recievedEffects(gimmeData);
+		effects = recievedEffects.getEffectTypes();
+	//	sf::sleep(sf::milliseconds(10));
 	}
 	delete recvStrm, serSock; //destructor
 	
