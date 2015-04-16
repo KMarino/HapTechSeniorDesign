@@ -44,6 +44,7 @@
 
 		fd = open(buf, O_RDONLY);
 
+
 		if (fd < 0) {
 			perror("gpio/get-value");
 			return fd;
@@ -51,7 +52,7 @@
 
 		read(fd, &ch, 1);
 
-		close(fd);
+
 		return atoi(&ch);
 	}
 
@@ -63,15 +64,28 @@
 
 		snprintf(buf, sizeof(buf), SYSFS_AI_DIR "/AIN%d", pin);
 		fd = open(buf, O_RDONLY);
+		//std::cout << "fd open: " << fd <<"\n";
 
 		if (fd < 0) {
 			perror("ain/get-value");
 			return fd;
 		}
+		//std::cout << "fd open: " << fd <<"\n";
+		int err = read(fd, &ch, 4); 
+		//std::cout << "fd after open: " << fd <<"\n";*/
 
-		read(fd, &ch, 4);
+		if (err < 0) {
+			std::cout <<"read failed!\n";
+			return -1;
+		}
+		//std::cout << "fd read: " << fd <<"\n";
 
-		close(fd);
+		if (close(fd) < 0) {
+			std::cout <<"close failed!\n";
+			return -1;
+		} 
+		//std::cout << "fd close: " << fd <<"\n";
+
 		return atoi(&ch);
 	}
 
