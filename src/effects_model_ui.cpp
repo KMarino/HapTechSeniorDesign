@@ -87,6 +87,7 @@ void display(){
 }
 
 int main(int argc, char** argv){
+	setenv("DISPLAY", ":0.0", true);
 	glutInit(&argc, argv);
 	if(argc!=3){ //taking inputs
 		printf("Usage: %s hwConfigFile mappingConfigFile\n", argv[0]);
