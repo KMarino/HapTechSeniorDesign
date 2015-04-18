@@ -57,8 +57,19 @@ void closeWin(){
 void display(){
 	glClear(GL_COLOR_BUFFER_BIT); //clear all
 	glColor3f(1.0,1.0,1.0); //draw white circle
+	glBegin(GL_POLYGON);
+	float theta;
+	for(int i = 0; i<360; i++){
+	    theta = i*M_PI/180;
+        glVertex2f(0.1*cos(theta),0.1*sin(theta));
+	}
+	glEnd();
+	glLoadIdentity(); //need to reset translation
+	glTranslatef(0,0,0);
+	glTranslatef(transx, transy, transz); //translate
+    glScalef(0.5666,1.0,1.0);
 	//GLUPartialDisk variables for drawing	
-	GLdouble innerRad = 0.0; 
+	/*GLdouble innerRad = 0.0; 
 	GLdouble outerRad = .2;
 	GLint slices = 100;
 	GLint loops = 100;
@@ -66,11 +77,11 @@ void display(){
 	GLdouble sweep = 360;
 	gluPartialDisk(quad, innerRad, outerRad, slices, loops, start, sweep);
 	//GLUquadric*, GLdouble, GLdouble, GLint (subdivisions around z axis), GLint (concentric rings about origin for subdivision), GLdouble (start angle in deg), GLdouble (sweep angle in deg)
-	glLoadIdentity(); //need to reset translation
+    glLoadIdentity(); //need to reset translation
 	glTranslatef(0,0,0);
 	glTranslatef(transx, transy, transz); //translate
 	glScalef(0.5666,1.0,1.0); //make a circle, not an oval
-	//swap buffers and redraw
+	*///swap buffers and redraw
 	glutSwapBuffers();
 	//glutPostRedisplay();
 }
@@ -96,7 +107,7 @@ int main(int argc, char** argv){
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMove);
 	glutKeyboardFunc(keyboard);
-	glutTimerFunc(10, timer, 0); //msecs, timerfunc,input
+	//glutTimerFunc(10, timer, 0); //msecs, timerfunc,input
 	glutCloseFunc(closeWin);
 	//init quadric for drawing
 	quad = gluNewQuadric(); 
