@@ -14,7 +14,7 @@ CFLAGS += -O3 -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
 
 #Libraries
 LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
-	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so \
+	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.9.2/libjson_linux-gcc-4.9.2_libmt.so \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
 	$(EXTDIR)/aquila/libAquila.a \
 	$(EXTDIR)/aquila/lib/libOoura_fft.a \
@@ -64,7 +64,7 @@ $(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp
 
 $(BINDIR)/key_test.o: $(SRCDIR)/key_test.cpp 
 	@echo $<
-	$(CXX) $(CFLAGS) -c -o $(BINDIR)/key_test.o $(SRCDIR)/dsp.cpp ${INCS}
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/key_test.o $(SRCDIR)/key_test.cpp ${INCS}
 
 $(BINDIR)/HardwareControlTest.o: $(SRCDIR)/HardwareControlTest.cpp 
 	@echo $<

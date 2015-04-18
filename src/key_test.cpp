@@ -82,21 +82,23 @@ void display()
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	if(argc!=1)
-	{ //taking inputs
-		printf("Usage wrong");
-		exit(0);
-	}
+//	if(argc!=1)
+//	{ //taking inputs
+//		printf("Usage wrong");
+//		exit(0);
+//	}
 	
 	//get touchscreen width and height from config
-	screenHeight = model->getTouchHeight(); 
-	screenWidth = model->getTouchWidth();
+//	screenHeight = model->getTouchHeight(); 
+//	screenWidth = model->getTouchWidth();
+	screenHeight = 272;
+	screenWidth = 480;
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //double buffering, rgba
 	glutInitWindowSize(screenWidth, screenHeight); //size of BBB touchscreen
 	glutInitWindowPosition(0,0); //aligned to corner
 	glutCreateWindow("HapTech Guitar Effects"); //open a window
 	glClearColor(0.0,0.0,0.0,0.0); //clear screen in black
-	glutFullScreen(); //fullscreen (no window border)
+//	glutFullScreen(); //fullscreen (no window border)
 	//use the GL event functions
 	glutDisplayFunc(display); 
 	glutMouseFunc(mouse);
