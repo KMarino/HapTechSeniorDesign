@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <cmath>
 #include "gtest/gtest.h"
 #include "optparser.h"
 #include "effect.h"
@@ -7,6 +8,8 @@
 #include "hwstate.h"
 #include "eventinfo.h"
 #include "effectsmodel.h" 
+#include "sockClient.h" 
+#include "sockServ.h"
 
 using namespace std;
 
@@ -333,16 +336,16 @@ TEST(hwstate, testConfigParse)
     EXPECT_EQ(hwstate.getValue(SWITCH, 2), 0);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 0), 8);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 0), 0);
-    EXPECT_EQ(hwstate.getButtonIndex('a'), 0);
+    EXPECT_EQ(hwstate.getButtonIndex(10), 0);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 1), 9);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 1), 0);
-    EXPECT_EQ(hwstate.getButtonIndex('s'), 1);
+    EXPECT_EQ(hwstate.getButtonIndex(11), 1);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 2), 10);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 2), 0);
-    EXPECT_EQ(hwstate.getButtonIndex('d'), 2);
+    EXPECT_EQ(hwstate.getButtonIndex(12), 2);
     EXPECT_EQ(hwstate.getPinNumber(PUSHBUTTON, 3), 11);
     EXPECT_EQ(hwstate.getValue(PUSHBUTTON, 3), 0);    
-    EXPECT_EQ(hwstate.getButtonIndex('f'), 3);
+    EXPECT_EQ(hwstate.getButtonIndex(13), 3);
     EXPECT_EQ(hwstate.getLogicLevel(), 5.0);
 }
 
@@ -575,7 +578,7 @@ TEST(Profile, testProfileUpdate)
     EXPECT_EQ(types2[1], DELAY);
     Effect_Lowpass lowpass = *((Effect_Lowpass*) effects2[0]);
     Effect_Delay delay = *((Effect_Delay*) effects2[1]);
-    EXPECT_LT(abs(lowpass.m_cutoff - (60 + 0.5*(log((1.0/5.0) * (5.0 - (1/exp(2)))) + 2)*(11940))), 1e-6);
+    EXPECT_LT(abs(lowpass.m_cutoff - (60 + 0.5*(log((1.0/5.0) * (5.0 - (1/exp(2)))) + 2)*(11940))), 1e-3);
     EXPECT_EQ(lowpass.m_resonance, 6);
     EXPECT_EQ(lowpass.m_on, 0);
     EXPECT_EQ(delay.m_amount, 4);
@@ -720,6 +723,26 @@ TEST(EffectsModel, checkTouchSize)
     // Check values
     EXPECT_EQ(width, 480);
     EXPECT_EQ(height, 560);
+}
+TEST(IPCSocket, sendReceive)
+{
+    //create
+    ipcCliSock* cliSock = new ipcCliSock();
+    ipcSerSock* serSock = new ipcSerSock();
+
+    char message[] = "ohai";
+
+    bool ok = cliSock->sockSend(message, sizeof(message));
+    char * response = serSock->sockRecv();
+
+    EXPECT_EQ(ok, true);
+    EXPECT_EQ('o', response[0]);
+    EXPECT_EQ('h', response[1]);
+    EXPECT_EQ('a', response[2]);
+    EXPECT_EQ('i', response[3]);
+
+    delete cliSock;
+    delete serSock;
 }
 
 int main(int argc, char** argv)

@@ -14,11 +14,11 @@
     // Number of buttons and pins (possibly)
     "num_push": 4,
     "push_pins": [8, 9, 10, 11],
-    "keys": ["a", "s", "d", "f"],
+    "keys": [10, 11, 12, 13],
 
     // Touchscreen info
     "touch_size": [480, 272],
   
     // Logic voltage level
-    "logic_level": 5.0
+    "logic_level": 1.8
 }

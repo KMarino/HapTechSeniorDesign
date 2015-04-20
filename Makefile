@@ -13,24 +13,32 @@ EXTDIR = extern
 CFLAGS += -O3 -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
 
 #Libraries
-LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU -lpthread \
+LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
 	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
-	$(EXTDIR)/aquila/lib/libAquila.a
+	$(EXTDIR)/aquila/libAquila.a \
+	$(EXTDIR)/aquila/lib/libOoura_fft.a \
+	-lsfml-audio \
+	-lsfml-system \
+	-lpthread
 
 #Includes
-INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila/include/aquila
+INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila-src/aquila
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
 
 # Object files
-OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o
+OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o $(BINDIR)/sockClient.o $(BINDIR)/sockServ.o $(BINDIR)/gpio.o
 
-all:   test ui dsp
+all:   ui dsp key hwc dtf test
 ui:    $(BINDIR)/effects_model_ui
-dsp:   $(BINDIR)/dsp 
+dsp:   $(BINDIR)/dsp
+key:   $(BINDIR)/key_test
+hwc:   $(BINDIR)/hw_control_test
+dtf:   $(BINDIR)/dsp_testframe
 test:  $(BINDIR)/unit_test 
+
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}
@@ -38,7 +46,16 @@ $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 $(BINDIR)/dsp: $(BINDIR)/dsp.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/dsp $(BINDIR)/dsp.o $(OBJS) $(LIBS) ${INCS}
 
-$(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
+$(BINDIR)/key_test: $(BINDIR)/key_test.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/key_test $(BINDIR)/key_test.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/hw_control_test: $(BINDIR)/HardwareControlTest.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/hw_control_test $(BINDIR)/HardwareControlTest.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/dsp_testframe: $(BINDIR)/dsp_testframe.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/dsp_testframe $(BINDIR)/dsp_testframe.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/unit_test: $(OBJS) $(BINDIR)/unittesting.o
 	$(CXX) $(CFLAGS) -o $(BINDIR)/unit_test $(BINDIR)/unittesting.o $(OBJS) $(LIBS) ${INCS}
 	./$(BINDIR)/unit_test $(SRCDIR)/../config/unitTest/
 
@@ -49,6 +66,18 @@ $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp
 $(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp 
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp.o $(SRCDIR)/dsp.cpp ${INCS}
+
+$(BINDIR)/key_test.o: $(SRCDIR)/key_test.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/key_test.o $(SRCDIR)/key_test.cpp ${INCS}
+
+$(BINDIR)/HardwareControlTest.o: $(SRCDIR)/HardwareControlTest.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/HardwareControlTest.o $(SRCDIR)/HardwareControlTest.cpp ${INCS}
+
+$(BINDIR)/dsp_testframe.o: $(SRCDIR)/dsp_testframe.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp_testframe.o $(SRCDIR)/dsp_testframe.cpp ${INCS}
 
 $(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
 	@echo $<
@@ -73,6 +102,18 @@ $(BINDIR)/hwstate.o: $(SRCDIR)/hwstate.cpp $(INCDIR)/hwstate.h
 $(BINDIR)/effect.o: $(SRCDIR)/effect.cpp $(INCDIR)/effect.h
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effect.o $(SRCDIR)/effect.cpp ${INCS}
+
+$(BINDIR)/sockClient.o: $(SRCDIR)/sockClient.cpp $(INCDIR)/sockClient.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/sockClient.o $(SRCDIR)/sockClient.cpp ${INCS}
+	
+$(BINDIR)/sockServ.o: $(SRCDIR)/sockServ.cpp $(INCDIR)/sockServ.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/sockServ.o $(SRCDIR)/sockServ.cpp ${INCS}
+
+$(BINDIR)/gpio.o: $(SRCDIR)/gpio.cpp $(INCDIR)/gpio.h
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/gpio.o $(SRCDIR)/gpio.cpp ${INCS}
 
 $(BINDIR)/effectupdatemessage.o: $(SRCDIR)/effectupdatemessage.cpp $(INCDIR)/effectupdatemessage.h
 	@echo $<

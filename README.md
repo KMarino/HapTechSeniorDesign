@@ -2,33 +2,42 @@
 
 #### Install dependencies
 
-        sudo apt-get install build-essential scons cmake freeglut3-dev libsfml-dev
+        sudo apt-get install build-essential scons cmake freeglut3-dev 
 
-#### Clone submodules
+	We now depend on SFML 2.2 which is not in the normal repo.
+	Download as source from the github and build/install from there
+	mkdir SFML
+	mkdir SFML_build (builds with cmake like aquila)
+	cd SFML
+	git clone https://github.com/LaurentGomila/SFML.git
+	cd ../SFML_build
+	cmake ../SFML
+	(install dependencies until cmake is happy full list here 
+	http://www.sfml-dev.org/tutorials/2.2/compile-with-cmake.php)
+	make
+	sudo make install
+	ldconfig (this will refresh the linker cache so it links correctly later)
+#### Aquila
 
-Git submodules are sub-repositories. It keeps your repo from tracking all of the files and changes to it.
-To clone all submodules:
+First clone Aqulia to extern
 
-        git submodule update --init
+	cd extern/
+	git clone git://github.com/zsiciarz/aquila.git aquila-src
+	cd ..
 
-#### Auquila
-
+Make a build directory for Aquila
 Aquila must be built with `cmake`, which doesn't play nice with `make`
 
-        cd extern/aquila-src
-        cmake -DCMAKE_INSTALL_PREFIX="../aquila"
-        cd ../..
+        mkdir extern/aquila
+	cd aquila
+        cmake ../aquila-src
+ 	
+	make
+	sudo make install
 
 #### Build Included dependencies
 
 This will build gtest, jsoncpp, and aquila
-
-
-If afterwards you end up with a bunch of untracked files, you can uncheck them out (e.g. `git reset --hard HEAD`).
-The binaries will still exist. If submodules keep saying 'untracked', e.g.
-`modified: extern/aquila-src (untracked content)`, try
-
-        git submodule foreach git reset --hard HEAD
 
 ### Build
 
