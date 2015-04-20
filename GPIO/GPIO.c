@@ -50,8 +50,17 @@
 			return fd;
 		}
 
-		read(fd, &ch, 1);
+		int err = read(fd, &ch, 1);
 
+		if (err < 0) {
+			std::cout <<"read failed!\n";
+			return -1;
+		}
+
+		if (close(fd) < 0) {
+			std::cout <<"close failed!\n";
+			return -1;
+		} 
 
 		return atoi(&ch);
 	}
