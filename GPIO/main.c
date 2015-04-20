@@ -17,10 +17,10 @@ int main()
 	long curtime, wait;
 	curtime = 0;
 	std::cout << "\n\nRunning...\n\n";
-	for(wait = 500; wait >= 0; wait--){
+	for(wait = 10; wait >= 0; wait--){
 
 
-		for (int i = 0; i < 1022; i++) {
+		for (int i = 0; i < 1022; i++) { //can only have 1021 files open by default
 			gettimeofday(&start, NULL);
 			curtime = start.tv_usec;
 			while(curtime - start.tv_usec <= wait) { //wait for specified amount of time before read
