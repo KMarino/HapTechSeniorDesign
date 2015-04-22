@@ -1,160 +1,141 @@
-#include "source/generator/SineGenerator.h"
-#include <SFML/Audio.hpp>
-#include "global.h"
-#include "transform/FftFactory.h"
-#include "tools/TextPlot.h"
-#include "synth/SineSynthesizer.h"
-#include <stdlib.h>
+/******************************************/
+/*
+  duplex.cpp
+  by Gary P. Scavone, 2006-2007.
+
+  This program opens a duplex stream and passes
+  input directly through to the output.
+*/
+/******************************************/
+
+#include "RtAudio.h"
 #include <iostream>
-#include <algorithm>
-#include <memory>
-#include <thread>
-#include <mutex>
-#include "sockServ.h"
-#include <string.h>
-#include "effectupdatemessage.h"
+#include <cstdlib>
+#include <cstdint>
+#include <cstring>
 
-std::vector <sf::SoundBuffer> buffers(2);
-std::mutex BufferStateMutex;
-int recorderBufferState = 0; //buffer for recorder
-int playerBufferState = 0;//buffer for player
-bool CONT_LISTEN = true;//halt boolean
-bool firstTime = true;//first buffer edge case handler
+/*
+typedef char MY_TYPE;
+#define FORMAT RTAUDIO_SINT8
+*/
 
-unsigned int channels;
-unsigned int sampleRate;
-vector<EffectType> effects;//recieved from effectsmodelcode
-//sf::SoundBuffer oldBuffer might be necessary for edge case in delay
+typedef signed short MY_TYPE;
+#define FORMAT RTAUDIO_SINT16
 
-class inputAudioStream : public sf::SoundStream
-{
-public:
-	void load()//loads initial buffer and calls init to set smpRate
-	{
-		samples.assign(buffers[playerBufferState].getSamples(), buffers[playerBufferState].getSamples() + buffers[playerBufferState].getSampleCount());
-		currentSample = 0;
-		channels = buffers[playerBufferState].getChannelCount();
-		sampleRate = buffers[playerBufferState].getSampleRate();
-		initialize(channels, sampleRate);//inherited func
-	}
-private:
-	std::vector<sf::Int16> samples;
-	std::size_t currentSample;
-	void applyDSP(std::vector<sf::Int16> *samples)
-	{
-		return;
-	}
-	virtual bool onGetData(Chunk& data)
-	{
-		
-		const int samplesToStream = 4410; 
-		//arbritary number tweak for preformance
-		//samples/SampleRate = time
-		if(currentSample == samples.size())
-		{
-			auto sample_start = buffers[playerBufferState].getSamples();
-			auto sample_Count = buffers[playerBufferState].getSampleCount();
-			auto sample_end = buffers[playerBufferState].getSamples() + sample_Count;
-			
-			samples.assign(sample_start, sample_end);
-			currentSample = 0;
-		}
-		applyDSP(&samples);
-		data.samples = &samples[currentSample];
-		if(currentSample + samplesToStream <= samples.size())
-		{
-			//data struct is inherited from soundstream
-			data.sampleCount = samplesToStream;
-			currentSample+=samplesToStream;
-		}
-		else
-		{
-			//player remain sampes and set next look to reset
-			data.sampleCount = samples.size() - currentSample;
-			currentSample = samples.size();
-		}
-	}
-	virtual void onSeek(sf::Time timeOffset)
-	{
-		//required virtual func, we're not using it
-//		int dummy = 0;
-		return;
-	}
-	
-};
-void recorder()
-{
-	//this function handles recording of audio, runs in own thread
-	while(CONT_LISTEN)//global shutdownHandler
-	{
-		unsigned int recordTime = 400;
-		sf::SoundBufferRecorder recorder;
-		recorder.start();
-		sf::sleep(sf::milliseconds(recordTime));
-		recorder.stop();
-		buffers[recorderBufferState] = recorder.getBuffer();
-		if(firstTime)
-		{
-			firstTime =false;
-			playerBufferState = 1;
-		}
-		if(recorderBufferState == 0)
-		{
-			recorderBufferState = 1;
-			playerBufferState = 0;
-		}
-		else
-		{
-			recorderBufferState = 0;
-			playerBufferState = 1;
-		}
-	}
+/*
+typedef S24 MY_TYPE;
+#define FORMAT RTAUDIO_SINT24
+
+typedef signed long MY_TYPE;
+#define FORMAT RTAUDIO_SINT32
+
+typedef float MY_TYPE;
+#define FORMAT RTAUDIO_FLOAT32
+
+typedef double MY_TYPE;
+#define FORMAT RTAUDIO_FLOAT64
+*/
+
+void usage( void ) {
+  // Error function in case of incorrect command-line
+  // argument specifications
+  std::cout << "\nuseage: duplex N fs <iDevice> <oDevice> <iChannelOffset> <oChannelOffset>\n";
+  std::cout << "    where N = number of channels,\n";
+  std::cout << "    fs = the sample rate,\n";
+  std::cout << "    iDevice = optional input device to use (default = 0),\n";
+  std::cout << "    oDevice = optional output device to use (default = 0),\n";
+  std::cout << "    iChannelOffset = an optional input channel offset (default = 0),\n";
+  std::cout << "    and oChannelOffset = optional output channel offset (default = 0).\n\n";
+  exit( 0 );
 }
-void play()
-{//plays using custom audio stream from double buffer
-//run in own thread
-	while(firstTime)
-		sf::sleep(sf::milliseconds(10));//spin until first buffer
-	inputAudioStream stream;
-	stream.load();
-	stream.play();
-	while(CONT_LISTEN)
-		sf::sleep(sf::milliseconds(100));
-	sf::sleep(sf::milliseconds(100));
-}
-void closeProgram()
+
+int inout( void *outputBuffer, void *inputBuffer, unsigned int /*nBufferFrames*/,
+           double /*streamTime*/, RtAudioStreamStatus status, void *data )
 {
-	//thread that ends program
-	//right now timer, eventually will read from something I supose
-	sf::sleep(sf::milliseconds(100000));
-	CONT_LISTEN = false;
+  // Since the number of input and output channels is equal, we can do
+  // a simple buffer copy operation here.
+  if ( status ) std::cout << "Stream over/underflow detected." << std::endl;
+
+  uint32_t *bytes = (uint32_t *) data;
+  memcpy( outputBuffer, inputBuffer, *bytes );
+  return 0;
 }
-int main()
+
+int main( int argc, char *argv[] )
 {
-	const Aquila::FrequencyType sampleFreq = sampleRate;
-	std::thread listener (recorder);
-	std::thread player (play);
-	std::thread endControl (closeProgram);
-	
-	ipcSerSock* serSock = new ipcSerSock(); //this is the constructor
-	char gimmeData[1024];
-	char msgSizeC[sizeof(int)];
-	char *recvStrm;
-        while(CONT_LISTEN)
-	{
-	//blocking recieve here
-        	recvStrm = serSock->sockRecv();
-        	strncpy(msgSizeC, recvStrm, sizeof(int));
-       		int msgSize = atoi(msgSizeC);
-	        strncpy(recvStrm, gimmeData, msgSize); //this is where Kenny's stuff will send to
-        	EffectUpdateMessage recievedEffects(gimmeData);
-		effects = recievedEffects.getEffectTypes();
-	//	sf::sleep(sf::milliseconds(10));
-	}
-	delete recvStrm, serSock; //destructor
-	
-	listener.join();
-	player.join();
-	endControl.join();
-	return 0;
+  unsigned int channels, fs, bufferBytes, oDevice = 0, iDevice = 0, iOffset = 0, oOffset = 0;
+
+  // Minimal command-line checking
+  if (argc < 3 || argc > 7 ) usage();
+
+  RtAudio adac;
+  if ( adac.getDeviceCount() < 1 ) {
+    std::cout << "\nNo audio devices found!\n";
+    exit( 1 );
+  }
+
+  channels = (unsigned int) atoi(argv[1]);
+  fs = (unsigned int) atoi(argv[2]);
+  if ( argc > 3 )
+    iDevice = (unsigned int) atoi(argv[3]);
+  if ( argc > 4 )
+    oDevice = (unsigned int) atoi(argv[4]);
+  if ( argc > 5 )
+    iOffset = (unsigned int) atoi(argv[5]);
+  if ( argc > 6 )
+    oOffset = (unsigned int) atoi(argv[6]);
+
+  // Let RtAudio print messages to stderr.
+  adac.showWarnings( true );
+
+  // Set the same number of channels for both input and output.
+  unsigned int bufferFrames = 512;
+  RtAudio::StreamParameters iParams, oParams;
+  iParams.deviceId = iDevice;
+  iParams.nChannels = channels;
+  iParams.firstChannel = iOffset;
+  oParams.deviceId = oDevice;
+  oParams.nChannels = channels;
+  oParams.firstChannel = oOffset;
+
+  if ( iDevice == 0 )
+    iParams.deviceId = adac.getDefaultInputDevice();
+  if ( oDevice == 0 )
+    oParams.deviceId = adac.getDefaultOutputDevice();
+
+  RtAudio::StreamOptions options;
+  //options.flags |= RTAUDIO_NONINTERLEAVED;
+
+  try {
+    adac.openStream( &oParams, &iParams, FORMAT, fs, &bufferFrames, &inout, (void *)&bufferBytes, &options );
+  }
+  catch ( RtAudioError& e ) {
+    std::cout << '\n' << e.getMessage() << '\n' << std::endl;
+    exit( 1 );
+  }
+
+  bufferBytes = bufferFrames * channels * sizeof( MY_TYPE );
+
+  // Test RtAudio functionality for reporting latency.
+  std::cout << "\nStream latency = " << adac.getStreamLatency() << " frames" << std::endl;
+
+  try {
+    adac.startStream();
+
+    char input;
+    std::cout << "\nRunning ... press <enter> to quit (buffer frames = " << bufferFrames << ").\n";
+    std::cin.get(input);
+
+    // Stop the stream.
+    adac.stopStream();
+  }
+  catch ( RtAudioError& e ) {
+    std::cout << '\n' << e.getMessage() << '\n' << std::endl;
+    goto cleanup;
+  }
+
+ cleanup:
+  if ( adac.isStreamOpen() ) adac.closeStream();
+
+  return 0;
 }

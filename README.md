@@ -4,19 +4,14 @@
 
         sudo apt-get install build-essential scons cmake freeglut3-dev 
 
-	We now depend on SFML 2.2 which is not in the normal repo.
-	Download as source from the github and build/install from there
-	mkdir SFML
-	mkdir SFML_build (builds with cmake like aquila)
-	cd SFML
-	git clone https://github.com/LaurentGomila/SFML.git
-	cd ../SFML_build
-	cmake ../SFML
-	(install dependencies until cmake is happy full list here 
-	http://www.sfml-dev.org/tutorials/2.2/compile-with-cmake.php)
+#### Rtaudio
+First clone Rtaudio to extern
+	cd extern/
+	git clone https://github.com/thestk/rtaudio.git
+	cd rtaudio
+	autoconf
+	./configure
 	make
-	sudo make install
-	ldconfig (this will refresh the linker cache so it links correctly later)
 #### Aquila
 
 First clone Aqulia to extern

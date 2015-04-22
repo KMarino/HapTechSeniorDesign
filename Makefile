@@ -10,7 +10,7 @@ INCDIR = include
 EXTDIR = extern
 
 # Compile flags
-CFLAGS += -O3 -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
+CFLAGS += -O2 -Wall -Wextra -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
 
 #Libraries
 LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
@@ -18,12 +18,11 @@ LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
 	$(EXTDIR)/aquila/libAquila.a \
 	$(EXTDIR)/aquila/lib/libOoura_fft.a \
-	-lsfml-audio \
-	-lsfml-system \
+	-lasound \
 	-lpthread
 
 #Includes
-INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila-src/aquila
+INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila-src/aquila 
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
@@ -42,7 +41,7 @@ $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/dsp: $(BINDIR)/dsp.o $(OBJS)
-	$(CXX) $(CFLAGS) -o $(BINDIR)/dsp $(BINDIR)/dsp.o $(OBJS) $(LIBS) ${INCS}
+	$(CXX) $(CFLAGS) -D__LINUX_ALSA__  -o $(BINDIR)/dsp $(BINDIR)/dsp.o $(EXTDIR)/rtaudio/RtAudio.cpp $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/key_test: $(BINDIR)/key_test.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/key_test $(BINDIR)/key_test.o $(OBJS) $(LIBS) ${INCS}
@@ -60,7 +59,7 @@ $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp
 
 $(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp 
 	@echo $<
-	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp.o $(SRCDIR)/dsp.cpp ${INCS}
+	$(CXX) $(CFLAGS) -D__LINUX_ALSA__ -c -o $(BINDIR)/dsp.o $(SRCDIR)/dsp.cpp ${INCS}
 
 $(BINDIR)/key_test.o: $(SRCDIR)/key_test.cpp 
 	@echo $<
