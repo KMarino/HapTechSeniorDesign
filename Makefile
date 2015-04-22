@@ -14,7 +14,7 @@ CFLAGS += -O2 -Wall -Wextra -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
 
 #Libraries
 LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
-	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.9.2/libjson_linux-gcc-4.9.2_libmt.so \
+	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.6/libjson_linux-gcc-4.6_libmt.so \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
 	$(EXTDIR)/aquila/libAquila.a \
 	$(EXTDIR)/aquila/lib/libOoura_fft.a \
@@ -30,12 +30,14 @@ INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/
 # Object files
 OBJS = $(BINDIR)/optparser.o $(BINDIR)/effectsmodel.o $(BINDIR)/eventinfo.o $(BINDIR)/profile.o $(BINDIR)/hwstate.o $(BINDIR)/effect.o $(BINDIR)/effectupdatemessage.o $(BINDIR)/sockClient.o $(BINDIR)/sockServ.o $(BINDIR)/gpio.o
 
-all:   ui dsp key hwc test
+all:   ui dsp key hwc dtf test
 ui:    $(BINDIR)/effects_model_ui
 dsp:   $(BINDIR)/dsp
 key:   $(BINDIR)/key_test
 hwc:   $(BINDIR)/hw_control_test
+dtf:   $(BINDIR)/dsp_testframe
 test:  $(BINDIR)/unit_test 
+
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}
@@ -49,7 +51,10 @@ $(BINDIR)/key_test: $(BINDIR)/key_test.o $(OBJS)
 $(BINDIR)/hw_control_test: $(BINDIR)/HardwareControlTest.o $(OBJS)
 	$(CXX) $(CFLAGS) -o $(BINDIR)/hw_control_test $(BINDIR)/HardwareControlTest.o $(OBJS) $(LIBS) ${INCS}
 
-$(BINDIR)/unit_test: 	$(OBJS) $(BINDIR)/unittesting.o
+$(BINDIR)/dsp_testframe: $(BINDIR)/dsp_testframe.o $(OBJS)
+	$(CXX) $(CFLAGS) -o $(BINDIR)/dsp_testframe $(BINDIR)/dsp_testframe.o $(OBJS) $(LIBS) ${INCS}
+
+$(BINDIR)/unit_test: $(OBJS) $(BINDIR)/unittesting.o
 	$(CXX) $(CFLAGS) -o $(BINDIR)/unit_test $(BINDIR)/unittesting.o $(OBJS) $(LIBS) ${INCS}
 	./$(BINDIR)/unit_test $(SRCDIR)/../config/unitTest/
 
@@ -68,6 +73,10 @@ $(BINDIR)/key_test.o: $(SRCDIR)/key_test.cpp
 $(BINDIR)/HardwareControlTest.o: $(SRCDIR)/HardwareControlTest.cpp 
 	@echo $<
 	$(CXX) $(CFLAGS) -c -o $(BINDIR)/HardwareControlTest.o $(SRCDIR)/HardwareControlTest.cpp ${INCS}
+
+$(BINDIR)/dsp_testframe.o: $(SRCDIR)/dsp_testframe.cpp 
+	@echo $<
+	$(CXX) $(CFLAGS) -c -o $(BINDIR)/dsp_testframe.o $(SRCDIR)/dsp_testframe.cpp ${INCS}
 
 $(BINDIR)/optparser.o: $(SRCDIR)/optparser.cpp $(INCDIR)/optparser.h
 	@echo $<

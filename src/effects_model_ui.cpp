@@ -23,6 +23,35 @@ void keyboard(unsigned char key, int x, int y){
 	glutPostRedisplay();
 }
 
+void specialkey(int key, int x, int y) {
+	//will map touchscreen buttons to keys
+	//key is input as char, e.g. key=='a' = true
+	if(key=='q') glutReshapeWindow(screenWidth, screenHeight);
+
+	char val = 0;
+
+	// Check what special key it is
+	switch (key)
+	{
+		case GLUT_KEY_LEFT:
+			val = 1;
+			break;
+		case GLUT_KEY_RIGHT:
+			val = 2;
+			break;
+		case GLUT_KEY_UP:
+			val = 3;
+			break;
+		case GLUT_KEY_DOWN:
+			val = 4;
+			break;
+	}
+
+	EventInfo event(val);
+	model->updateModel(event);
+	glutPostRedisplay();
+}
+
 void mouse(int button, int state, int x, int y){
 	//adjust x, y position
 	transx = ((float)x-(screenWidth/2))/(screenWidth/2);
@@ -108,6 +137,7 @@ int main(int argc, char** argv){
 	glutMouseFunc(mouse);
 	glutMotionFunc(mouseMove);
 	glutKeyboardFunc(keyboard);
+	glutSpecialFunc(specialkey);
 	//glutTimerFunc(10, timer, 0); //msecs, timerfunc,input
 	glutCloseFunc(closeWin);
 	//init quadric for drawing

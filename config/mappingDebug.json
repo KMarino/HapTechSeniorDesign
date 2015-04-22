@@ -200,5 +200,66 @@
                 "hwidx": 0
             }
         }
+    },
+
+	"profile4":
+    {
+		"num_effects": 	1,
+		"effect_types": ["delay"],
+        "delay":
+        {
+            "amount":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hwtype": "pot",
+                "hwidx": 0,
+                "min": 0,
+                "max": 10
+            },
+
+            "speed":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hwtype": "pot",
+                "hwidx": 1,
+                "min": 0,
+                "max": 10
+            },
+
+            "decay":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hwtype": "pot",
+                "hwidx": 2,
+                "min": 0,
+                "max": 10
+            },
+
+            "attack":
+            {
+                "type": "float",
+                "default": 0,
+                "control": "linear",
+                "hwtype": "touch",
+                "hwidx": 0,
+                "min": 0,
+                "max": 10
+            },
+
+            "on":
+            {
+                "type": "bool",
+                "default": 0,
+                "control": "switch",
+                "hwtype": "switch",
+                "hwidx": 0
+            }
+        }
     }
 }
