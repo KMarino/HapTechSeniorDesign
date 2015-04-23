@@ -4,9 +4,8 @@
 #include <vector>
 #include <assert.h>
 #include <iostream>
-#include "effectsmodel.h"
 #include "effect.h"
-
+#include "profile.h"
 using namespace std;
 
 // Class that defines the message to update the DSP program
