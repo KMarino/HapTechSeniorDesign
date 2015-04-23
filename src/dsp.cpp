@@ -41,12 +41,12 @@ int inout( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   if ( status ) std::cout << "Stream over/underflow detected." << std::endl;
 //  std::cout<< *((short*)inputBuffer) << "\n";
   uint32_t *bytes = (uint32_t *) data;
-  float *obuffer = (float *) outputBuffer;
-  float *ibuffer = (float *) inputBuffer;
-  std::deque<float> delayBuffer;
-  unsigned int i, j;
-  int amp = 4;
-
+//  float *obuffer = (float *) outputBuffer;
+//  float *ibuffer = (float *) inputBuffer;
+//  std::deque<float> delayBuffer;
+//  unsigned int i, j;
+//  int amp = 4;
+   
    memcpy( outputBuffer, inputBuffer, *bytes );
   return 0;
 }
@@ -92,7 +92,7 @@ int main( int argc, char *argv[] )
 
  try 
   {
-    //adac.openStream( &oParams, &iParams, FORMAT, fs, &bufferFrames, &inout, (void *)&bufferBytes, &options );
+    adac.openStream( &oParams, &iParams, FORMAT, fs, &bufferFrames, &inout, (void *)&bufferBytes, &options );
   }
   catch ( RtAudioError& e ) 
   {
@@ -103,11 +103,11 @@ int main( int argc, char *argv[] )
   bufferBytes = bufferFrames * channels * sizeof( MY_TYPE );
 
   // Test RtAudio functionality for reporting latency.
-//  std::cout << "\nStream latency = " << adac.getStreamLatency() << " frames" << std::endl;
+  std::cout << "\nStream latency = " << adac.getStreamLatency() << " frames" << std::endl;
 
   try 
   {
-  //  adac.startStream();
+    adac.startStream();
     std::thread endControl(closeProgram);
     ipcSerSock* serSock = new ipcSerSock();
     char gimmeData[1024];
@@ -124,16 +124,20 @@ int main( int argc, char *argv[] )
 	//			delete effectObjectCopies[i];
 	//		}
 	//	}
-		strncpy(msgSizeC, recvStrm, sizeof(int));
-		int msgSize = atoi(msgSizeC);
-		std::cout<< msgSize<< "\n";
+		//strncpy(msgSizeC, recvStrm, sizeof(int));
+		int msgSize = 1024;
+		//std::cout<< msgSize<< "\n";
 		
-		strncpy(recvStrm, gimmeData, msgSize);
-		std::cout << gimmeData << " test \n";
+		strncpy(gimmeData,recvStrm, msgSize);
+//		std::cout << gimmeData << " test \n";
 		EffectUpdateMessage recievedEffects(gimmeData);
-		std::cout << gimmeData << "test \n";
-//		effectObjectCopies= recievedEffects.getEffectCopy();
-//		recievedEffectTypes = recievedEffects.getEffectTypes();
+		effectObjectCopies= recievedEffects.getEffectCopy();
+		recievedEffectTypes = recievedEffects.getEffectTypes();
+		cout << recievedEffectTypes.size();
+		for(int j = 0; j < recievedEffectTypes.size(); j++)
+		{
+		//	std::cout<< recievedEffectTypes[j];
+		}
 //		//debug
 		
 	}
