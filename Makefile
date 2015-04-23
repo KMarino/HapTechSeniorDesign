@@ -14,7 +14,7 @@ CFLAGS += -O2 -Wall -isystem $(EXTDIR)/gtest-1.7.0/include -std=c++11
 
 #Libraries
 LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
-	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.9.2/libjson_linux-gcc-4.9.2_libmt.so \
+	$(EXTDIR)/jsoncpp-src-0.5.0/libs/linux-gcc-4.9.1/libjson_linux-gcc-4.9.1_libmt.so \
 	$(EXTDIR)/gtest-1.7.0/make/gtest.a \
 	$(EXTDIR)/aquila/libAquila.a \
 	$(EXTDIR)/aquila/lib/libOoura_fft.a \
@@ -22,7 +22,7 @@ LIBS += -L/usr/local/lib/ -L/usr/lib -lglut -lGL -lGLU \
 	-lpthread
 
 #Includes
-INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila-src/aquila 
+INCS += -Iinclude -I$(EXTDIR)/gtest-1.7.0 -I$(EXTDIR)/jsoncpp-src-0.5.0/include/ -I$(EXTDIR)/aquila-src/aquila -I$(EXTDIR)/rtaudio/ 
 
 #Suffixes
 .SUFFIXES: .o .h .c .hpp .cpp
@@ -40,7 +40,7 @@ test:  $(BINDIR)/unit_test
 
 
 $(BINDIR)/effects_model_ui: $(BINDIR)/effects_model_ui.o $(OBJS)
-	$(CXX) $(CFLAGS) -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(OBJS) $(LIBS) ${INCS}
+	$(CXX) $(CFLAGS) -D__LINUX_ALSA__ -o $(BINDIR)/effects_model_ui $(BINDIR)/effects_model_ui.o $(EXTDIR)/rtaudio/RtAudio.cpp $(OBJS) $(LIBS) ${INCS}
 
 $(BINDIR)/dsp: $(BINDIR)/dsp.o $(OBJS)
 	$(CXX) $(CFLAGS) -D__LINUX_ALSA__  -o $(BINDIR)/dsp $(BINDIR)/dsp.o $(EXTDIR)/rtaudio/RtAudio.cpp $(OBJS) $(LIBS) ${INCS}
@@ -60,7 +60,7 @@ $(BINDIR)/unit_test: $(OBJS) $(BINDIR)/unittesting.o
 
 $(BINDIR)/effects_model_ui.o: $(SRCDIR)/effects_model_ui.cpp 
 	@echo $<
-	$(CXX) $(CFLAGS) -c -o $(BINDIR)/effects_model_ui.o $(SRCDIR)/effects_model_ui.cpp ${INCS}
+	$(CXX) $(CFLAGS) -D__LINUX_ALSA__ -c -o $(BINDIR)/effects_model_ui.o $(SRCDIR)/effects_model_ui.cpp ${INCS}
 
 $(BINDIR)/dsp.o: $(SRCDIR)/dsp.cpp 
 	@echo $<
