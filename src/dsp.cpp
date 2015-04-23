@@ -30,9 +30,9 @@ bool CONT_LISTEN = true;//global variable that controls stream
 typedef float MY_TYPE;
 #define FORMAT RTAUDIO_FLOAT32
 
-//std::vector<*Effect> effects;
-//std::vector<EffectType> types;
-
+std::vector<Effect*> effectObjectCopies;
+std::vector<EffectType> recievedEffectTypes;
+ 
 int inout( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
            double streamTime, RtAudioStreamStatus status, void *data )
 {
@@ -47,7 +47,7 @@ int inout( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
   unsigned int i, j;
   int amp = 4;
 
-//   memcpy( outputBuffer, inputBuffer, *bytes );
+   memcpy( outputBuffer, inputBuffer, *bytes );
   return 0;
 }
 
@@ -90,9 +90,9 @@ int main( int argc, char *argv[] )
   RtAudio::StreamOptions options;
   //options.flags |= RTAUDIO_NONINTERLEAVED;
 
-  try 
+ try 
   {
-    adac.openStream( &oParams, &iParams, FORMAT, fs, &bufferFrames, &inout, (void *)&bufferBytes, &options );
+    //adac.openStream( &oParams, &iParams, FORMAT, fs, &bufferFrames, &inout, (void *)&bufferBytes, &options );
   }
   catch ( RtAudioError& e ) 
   {
@@ -103,38 +103,44 @@ int main( int argc, char *argv[] )
   bufferBytes = bufferFrames * channels * sizeof( MY_TYPE );
 
   // Test RtAudio functionality for reporting latency.
-  std::cout << "\nStream latency = " << adac.getStreamLatency() << " frames" << std::endl;
+//  std::cout << "\nStream latency = " << adac.getStreamLatency() << " frames" << std::endl;
 
   try 
   {
-    adac.startStream();
+  //  adac.startStream();
     std::thread endControl(closeProgram);
     ipcSerSock* serSock = new ipcSerSock();
     char gimmeData[1024];
     char msgSizeC[sizeof(int)];
     char *recvStrm;
-    while(CONT_LISTEN)
+     while(CONT_LISTEN)
 	{
+		std::cout << "beginning wait \n";
 		recvStrm = serSock->sockRecv();
-		if(effects.size() == 0 )
-		{
-			for(int i = 0; i < effects.size(); i++)
-			{
-				delete effects[i];
-			}
-		}
+	//	if(effectObjectCopies.size() == 0 )
+	//	{
+	//		for(int i = 0; i < effectObjectCopies.size(); i++)
+	//		{
+	//			delete effectObjectCopies[i];
+	//		}
+	//	}
 		strncpy(msgSizeC, recvStrm, sizeof(int));
 		int msgSize = atoi(msgSizeC);
+		std::cout<< msgSize<< "\n";
+		
 		strncpy(recvStrm, gimmeData, msgSize);
+		std::cout << gimmeData << " test \n";
 		EffectUpdateMessage recievedEffects(gimmeData);
-		effects = recievedEffects.getEffectCopy();
-		//debug
+		std::cout << gimmeData << "test \n";
+//		effectObjectCopies= recievedEffects.getEffectCopy();
+//		recievedEffectTypes = recievedEffects.getEffectTypes();
+//		//debug
 		
 	}
 	delete recvStrm, serSock;
-	for(int i = 0; i < effects.size(); i++)
+	for(int i = 0; i < effectObjectCopies.size(); i++)
 	{
-		delete effects[i];
+		delete effectObjectCopies[i];
 	}
 	endControl.join();
     // Stop the stream.
