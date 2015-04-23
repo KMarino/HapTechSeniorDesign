@@ -20,12 +20,12 @@ class EffectsModel
 public:
     EffectsModel();
     EffectsModel(const char* hwConfigFile, const char* mappingConfigFile);
-    void updateModel(EventInfo event);
+    EffectUpdateMessage updateModel(EventInfo event);
     int getTouchWidth();
     int getTouchHeight();
 
 private:
-    void updateDSP();
+    EffectUpdateMessage updateDSP();
     bool updateSwitchDials();
     bool updateMouse(EventInfo event);
     bool updateKeyProfile(EventInfo event);
