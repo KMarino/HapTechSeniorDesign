@@ -29,7 +29,7 @@ EffectsModel::EffectsModel(const char* hwConfigFile, const char* mappingConfigFi
     m_curProfile = 0;
 }
 
-void EffectsModel::updateModel(EventInfo event)
+EffectUpdateMessage EffectsModel::updateModel(EventInfo event)
 {
     // Update effects using update functions
     switch (event.m_type)
@@ -49,7 +49,7 @@ void EffectsModel::updateModel(EventInfo event)
     m_profiles[m_curProfile].update(m_hw);
 
     // Send updated effects profile to dsp
-    updateDSP();
+    return updateDSP();
 }
 
 int EffectsModel::getTouchWidth()
@@ -62,19 +62,22 @@ int EffectsModel::getTouchHeight()
     return m_hw.getTouchHeight();
 }
 
-void EffectsModel::updateDSP()
+EffectUpdateMessage EffectsModel::updateDSP()
 {
     // Get effects message
     EffectUpdateMessage message(m_profiles[m_curProfile]);
+	return message;
+ //debug	cout << message.getEffectCopy().size() << " num effects \n";
 
     // Get message as char[]
-    int msgSize = message.getMessageSize();
-    char msg[msgSize];
-    message.serialize(msg);
+   // int msgSize = message.getMessageSize();
+//debug	std::cout << msgSize<< " message size \n";
+  //  char msg[msgSize];
+   // message.serialize(msg);
 
     // Send msg over IPC
     // TODO
-    cliSock.sockSend(msg, msgSize);
+//    cliSock.sockSend(msg, msgSize);
 
 	
 }
@@ -117,7 +120,7 @@ bool EffectsModel::updateSwitchDials()
 		}
 		else
 		{
-			// Dummy valu
+	// Dummy valu
 			value = 1;
 		}
 

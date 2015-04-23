@@ -1,5 +1,16 @@
 #include "effectsmodel.h"
 #include "eventinfo.h"
+#include "effectupdatemessage.h"
+#include "RtAudio.h"
+#include <iostream>
+#include <cstdint>
+#include <cstdint>
+#include <cstring>
+#include <algorithm>
+#include <memory>
+#include <thread>
+#include <mutex>
+#include <chrono>
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -7,19 +18,111 @@
 #include <math.h>
 
 using namespace std;
+typedef float MY_TYPE;
+#define FORMAT RTAUDIO_FLOAT32
 
 //global inits
 GLUquadric* quad;
 float transx, transy, transz = 0;
 EffectsModel* model;
 int screenWidth, screenHeight;
+bool ContList = true;
+//DSP effect vectors
+std::mutex effectUpdateMutex;
+std::vector<Effect*> effectObjectCopies;
+std::vector<EffectType> recievedEffectTypes;
+int audioHandler(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+			double streamTime, RtAudioStreamStatus status, void *data)
+{
+	if(status) std::cout << "Stream over/underflow detected \n";
+	uint32_t *bytes = (uint32_t *) data;
+	memcpy(outputBuffer, inputBuffer, *bytes);
+	return 0;
+}
+void dsp()//thread fucntion for dsp
+{
+	 RtAudio adac;
+  	if ( adac.getDeviceCount() < 1 ) 
+	{
+    		std::cout << "\nNo audio devices found!\n";
+    		exit( 0 );
+  	}
+  	// Set the same number of channels for both input and output.
+  	unsigned int bufferBytes, bufferFrames = 128;
+	unsigned int fs, channels;
+	fs = 48000;
+	channels = 2;
+  	RtAudio::StreamParameters iParams, oParams;
+  	iParams.deviceId = 0; // first available device
+  	iParams.nChannels = 2;
+  	oParams.deviceId = 0; // first available device
+  	oParams.nChannels = 2;
+  	try {
+    		adac.openStream( &oParams, &iParams, FORMAT, fs, &bufferFrames, &audioHandler, (void *)&bufferBytes );
+  	}
+  	catch ( RtAudioError& e ) {
+    		e.printMessage();
+    		exit( 0 );
+  	}
+  	bufferBytes = bufferFrames * channels * sizeof(MY_TYPE);
+  	try 
+	{
+		adac.startStream();
+		while (ContList)
+		{
+		 std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+         	adac.stopStream();
+  	}
+  	catch ( RtAudioError& e ) 
+	{
+    		e.printMessage();
+    		goto cleanup;
+  	}
+ cleanup:
+  if ( adac.isStreamOpen() ) adac.closeStream();
 
+}
+void setEffects(EffectUpdateMessage m)
+{
+	effectUpdateMutex.lock();
+	recievedEffectTypes = m.getEffectTypes(); //vector of enums
+	for(int i = 0; i<effectObjectCopies.size(); i++)
+	{
+		delete effectObjectCopies[i];
+		/*switch (recievedEffectTypes[i])
+		{
+			case 1:
+				delete (Effect_Delay*)effectObjectCopies[i]; //free pointers
+				break;
+			case 2:
+				delete (Effect_Distortion*)effectObjectCopies[i];
+				break;
+			case 3:
+				delete (Effect_Equalizer*)effectObjectCopies[i];
+				break;
+			case 4:
+				delete (Effect_Lowpass*)effectObjectCopies[i];
+				break;
+			case 5:
+				delete (Effect_Reverb*)effectObjectCopies[i];
+				break;
+			default:
+				delete (Effect_Unknown*)effectObjectCopies[i];
+		}*/
+		
+	}
+	effectObjectCopies = m.getEffectCopy();
+	effectUpdateMutex.unlock();
+
+}
 void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
 	//key is input as char, e.g. key=='a' = true
 	if(key=='q') glutReshapeWindow(screenWidth, screenHeight);
 	EventInfo event(key);
-	model->updateModel(event);
+	EffectUpdateMessage message = model->updateModel(event);
+	setEffects(message);
 	glutPostRedisplay();
 }
 
@@ -48,7 +151,8 @@ void specialkey(int key, int x, int y) {
 	}
 
 	EventInfo event(val);
-	model->updateModel(event);
+	EffectUpdateMessage message= model->updateModel(event);
+	setEffects(message);
 	glutPostRedisplay();
 }
 
@@ -57,7 +161,8 @@ void mouse(int button, int state, int x, int y){
 	transx = ((float)x-(screenWidth/2))/(screenWidth/2);
 	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
-	model->updateModel(event);
+	EffectUpdateMessage message = model->updateModel(event);
+	setEffects(message);
 	glutPostRedisplay();
 }
 
@@ -66,7 +171,8 @@ void mouseMove(int x, int y){
 	transx = ((float)x-(screenWidth/2))/(screenWidth/2);
 	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
-	model->updateModel(event);
+	EffectUpdateMessage message = model->updateModel(event);
+	setEffects(message);
 	glutPostRedisplay();
 }
 
@@ -79,6 +185,7 @@ void timer(int n){
 void closeWin(){
 	//on window close (program end)
 	printf("Exiting.\n");
+	ContList = false;
 	delete model;
 	gluDeleteQuadric(quad);
 }
@@ -131,7 +238,7 @@ int main(int argc, char** argv){
 	glutInitWindowPosition(0,0); //aligned to corner
 	glutCreateWindow("HapTech Guitar Effects"); //open a window
 	glClearColor(0.0,0.0,0.0,0.0); //clear screen in black
-	glutFullScreen(); //fullscreen (no window border)
+//	glutFullScreen(); //fullscreen (no window border)
 	//use the GL event functions
 	glutDisplayFunc(display); 
 	glutMouseFunc(mouse);
@@ -145,6 +252,8 @@ int main(int argc, char** argv){
 		if (quad==0) exit(0);
 	gluQuadricDrawStyle(quad, GLU_FILL);
 	glScalef(0.5666,1.0,1.0); //make it a circle
+	std::thread audioControl(dsp);
 	glutMainLoop(); //do it all over and over
+	audioControl.join();	
 	return 0;
 }

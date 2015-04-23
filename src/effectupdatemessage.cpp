@@ -82,10 +82,11 @@ EffectUpdateMessage::EffectUpdateMessage(char* msg)
         m_effects.push_back(effect);
         offset += getEffectSize(type);
     }
-    assert(offset == m_msg_sz);   
+   // assert(offset == m_msg_sz);   
 
     // Copy actual message
     m_msg = new char[m_msg_sz];
+	cout << m_msg <<"\n";
     memcpy(m_msg, msg, m_msg_sz);
 }
 
