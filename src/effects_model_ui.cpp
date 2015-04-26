@@ -210,7 +210,7 @@ void mouse(int button, int state, int x, int y){
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
 	EffectUpdateMessage message = model->updateModel(event);
 	updateMutex.lock();
-	gX = x;
+	//gX = x;
 	gY = y;
 	updateMutex.unlock();
 	setEffects(message);
@@ -230,6 +230,10 @@ void mouseMove(int x, int y){
 void timer(int n){
 	EventInfo event;
 	model->updateModel(event);
+	updateMutex.lock();
+	float pinval = readAI(5);
+	gX = (int) pinval * screenWidth / 1.8; 
+	updateMutex.unlock();
 	glutPostRedisplay();
 }
 
