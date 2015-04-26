@@ -27,16 +27,55 @@ float transx, transy, transz = 0;
 EffectsModel* model;
 int screenWidth, screenHeight;
 bool ContList = true;
+bool passThrough = false;
 //DSP effect vectors
 std::mutex effectUpdateMutex;
 std::vector<Effect*> effectObjectCopies;
 std::vector<EffectType> recievedEffectTypes;
+int gX = 0;
+int gY = 0;//hacky fake for demo
+std::mutex updateMutex;
 int audioHandler(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 			double streamTime, RtAudioStreamStatus status, void *data)
 {
 	if(status) std::cout << "Stream over/underflow detected \n";
 	uint32_t *bytes = (uint32_t *) data;
+	float *obuffer = (float *) outputBuffer;
+	float *ibuffer = (float *) inputBuffer;
+//	Effect_Delay activeE =(Effect_Delay) effectObjectCopies[0];
+	if(!passThrough)
+	{	
+	float distort = 5;
+//	distort = ((activeE.m_attack) * .05);
+	float para1 = 0;
+	float para2 = 0;
+	updateMutex.lock();
+	para1 =gX/800.0;
+	para2 =gY/600.0;
+	updateMutex.unlock();
+	for(int i = 0; i < nBufferFrames*2; i++)
+	{
+		if(i > 0)
+			obuffer[i] = ibuffer[i] + (para1*ibuffer[i] * ibuffer[i-1]);
+		else
+			obuffer[i] = ibuffer[i] * ibuffer[i];
+	}
+	int j = 0;
+	for(int i = 0; i<nBufferFrames*2; i++)
+	{
+		if(i>para2)
+		{
+			for(j = 1; j<para2; j++)
+			{
+				obuffer[i] += obuffer[i-j];
+			} 
+			obuffer[i] /=std::floor(para2+1);
+		}
+	}
+	}
+	else{
 	memcpy(outputBuffer, inputBuffer, *bytes);
+	}
 	return 0;
 }
 void dsp()//thread fucntion for dsp
@@ -70,8 +109,8 @@ void dsp()//thread fucntion for dsp
 		adac.startStream();
 		while (ContList)
 		{
-		 std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		}
+			 std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
          	adac.stopStream();
   	}
   	catch ( RtAudioError& e ) 
@@ -118,6 +157,9 @@ void setEffects(EffectUpdateMessage m)
 }
 void keyboard(unsigned char key, int x, int y){
 	//will map touchscreen buttons to keys
+	passThrough = !passThrough;
+	 std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	cout<< "flip  bit \n";
 	//key is input as char, e.g. key=='a' = true
 	if(key=='q') glutReshapeWindow(screenWidth, screenHeight);
 	EventInfo event(key);
@@ -129,6 +171,10 @@ void keyboard(unsigned char key, int x, int y){
 void specialkey(int key, int x, int y) {
 	//will map touchscreen buttons to keys
 	//key is input as char, e.g. key=='a' = true
+	passThrough = !passThrough;
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	cout<< "flip  bit \n";
+	
 	if(key=='q') glutReshapeWindow(screenWidth, screenHeight);
 
 	char val = 0;
@@ -138,6 +184,7 @@ void specialkey(int key, int x, int y) {
 	{
 		case GLUT_KEY_LEFT:
 			val = 1;
+
 			break;
 		case GLUT_KEY_RIGHT:
 			val = 2;
@@ -162,6 +209,10 @@ void mouse(int button, int state, int x, int y){
 	transy = ((screenHeight/2)-(float)y)/(screenHeight/2);
 	EventInfo event(x+(screenWidth/2),y+(screenHeight/2));
 	EffectUpdateMessage message = model->updateModel(event);
+	updateMutex.lock();
+	gX = x;
+	gY = y;
+	updateMutex.unlock();
 	setEffects(message);
 	glutPostRedisplay();
 }
@@ -238,7 +289,7 @@ int main(int argc, char** argv){
 	glutInitWindowPosition(0,0); //aligned to corner
 	glutCreateWindow("HapTech Guitar Effects"); //open a window
 	glClearColor(0.0,0.0,0.0,0.0); //clear screen in black
-//	glutFullScreen(); //fullscreen (no window border)
+	glutFullScreen(); //fullscreen (no window border)
 	//use the GL event functions
 	glutDisplayFunc(display); 
 	glutMouseFunc(mouse);
